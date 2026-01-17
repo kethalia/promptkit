@@ -1,0 +1,164 @@
+# Dependency Audit
+
+Review project dependencies for security vulnerabilities, outdated packages, and supply chain risks.
+
+---
+
+## Context
+
+Gather before starting:
+- Package manager(s) in use (npm, yarn, pip, cargo, go mod, etc.)
+- Lock file availability
+- Production vs. development dependency distinction
+- Deployment environment constraints
+- Previous audit results if available
+
+## Instructions
+
+1. **Identify dependency manifest files**
+   - `package.json` / `package-lock.json` / `yarn.lock` (Node.js)
+   - `Cargo.toml` / `Cargo.lock` (Rust)
+   - `go.mod` / `go.sum` (Go)
+   - `requirements.txt` / `Pipfile` / `pyproject.toml` (Python)
+   - `Gemfile` / `Gemfile.lock` (Ruby)
+   - `pom.xml` / `build.gradle` (Java)
+   - `composer.json` (PHP)
+
+2. **Run native vulnerability scanners**
+   ```bash
+   # Node.js
+   npm audit
+   yarn audit
+   
+   # Rust
+   cargo audit
+   
+   # Go
+   govulncheck ./...
+   
+   # Python
+   pip-audit
+   safety check
+   
+   # Ruby
+   bundle audit check --update
+   
+   # General
+   trivy fs .
+   snyk test
+   ```
+
+3. **Check for known vulnerabilities**
+   - Cross-reference with CVE databases
+   - Check GitHub Security Advisories
+   - Review OSV (Open Source Vulnerabilities)
+   - Note CVSS scores and exploitability
+
+4. **Identify outdated dependencies**
+   - List packages behind latest versions
+   - Flag packages with available security patches
+   - Check for deprecated or unmaintained packages
+   - Identify packages with known EOL dates
+
+5. **Assess unnecessary dependencies**
+   - Find unused dependencies
+   - Identify dependencies duplicating functionality
+   - Check for overly permissive version ranges
+   - Review transitive dependency bloat
+
+6. **Check for suspicious packages**
+   - Verify package authenticity (typosquatting)
+   - Check package maintainer reputation
+   - Review recent ownership transfers
+   - Look for unexpected install scripts
+
+7. **Evaluate dependency confusion risks**
+   - Check for private package name collisions
+   - Verify registry configuration
+   - Review scoped package usage
+   - Check for mixed public/private registries
+
+8. **Review dependency configuration**
+   - Verify lock files are committed
+   - Check for pinned versions vs. ranges
+   - Review integrity hashes
+   - Assess reproducible builds capability
+
+## Output Format
+
+```markdown
+# Dependency Audit Report
+
+**Project:** [name]
+**Date:** [date]
+**Package Manager:** [npm/cargo/etc.]
+
+## Critical Vulnerabilities
+
+| Package | Version | CVE | CVSS | Description | Fixed In |
+|---------|---------|-----|------|-------------|----------|
+| [name] | [ver] | [CVE-XXXX-XXXXX] | [X.X] | [desc] | [version] |
+
+**Recommended Action:**
+```bash
+[update command]
+```
+**Breaking Changes:** [yes/no - details]
+
+---
+
+## High Vulnerabilities
+[Same format]
+
+## Medium/Low Vulnerabilities
+[Same format]
+
+## Outdated Dependencies
+
+| Package | Current | Latest | Security Update | Notes |
+|---------|---------|--------|-----------------|-------|
+| [name] | [ver] | [ver] | [yes/no] | [breaking changes] |
+
+## Suspicious or Risky Dependencies
+
+| Package | Concern | Recommendation |
+|---------|---------|----------------|
+| [name] | [issue] | [action] |
+
+## Unused Dependencies
+- [package] - can be removed
+- [package] - only used in [file], consider removal
+
+## Dependency Confusion Risks
+[Findings or "None identified"]
+
+## Recommendations
+
+1. **Immediate Actions**
+   - [Critical updates to apply now]
+
+2. **Short-term**
+   - [Updates requiring testing]
+
+3. **Long-term**
+   - [Major version upgrades to plan]
+
+## Update Commands
+```bash
+# Safe updates (patch/minor)
+[commands]
+
+# Updates requiring testing
+[commands]
+```
+```
+
+## Interactive Decisions
+
+Confirm with user:
+- [ ] Whether to run automated audit tools
+- [ ] Tolerance for breaking changes in updates
+- [ ] If dev dependencies should be included
+- [ ] Whether to update lock files
+- [ ] Priority: security patches vs. feature updates
+- [ ] Packages to exclude from updates (known incompatibilities)

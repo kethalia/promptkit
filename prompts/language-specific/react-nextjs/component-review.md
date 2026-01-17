@@ -1,0 +1,130 @@
+# Component Review
+
+Review React component design for structure, props, state management, and best practices.
+
+---
+
+## Context
+
+Before reviewing, gather:
+- The component file(s) to review
+- Related type definitions or interfaces
+- Parent components that consume this component
+- Custom hooks used by the component
+- Project's ESLint/TypeScript configuration for React rules
+
+## Instructions
+
+1. **Analyze Component Structure**
+   - Review file organization (imports, types, component, exports)
+   - Check component size - identify if it should be split
+   - Verify single responsibility principle adherence
+   - Assess naming conventions for clarity
+
+2. **Check Prop Types and Interfaces**
+   - Validate TypeScript interfaces/types for all props
+   - Check for proper optional vs required prop definitions
+   - Identify missing prop validation or overly permissive types
+   - Review default prop values for appropriateness
+   - Flag `any` types that should be specific
+
+3. **Review State Management**
+   - Assess local state necessity - could it be derived?
+   - Check for state that should be lifted up
+   - Identify state that could move to context or external store
+   - Review useState initializers for expensive computations
+
+4. **Evaluate Component Composition and Reusability**
+   - Identify hardcoded values that should be props
+   - Check for proper children/render prop patterns
+   - Review component coupling - is it too tightly bound?
+   - Identify opportunities for compound component patterns
+   - Assess if component is too specific or too generic
+
+5. **Identify Logic for Hook Extraction**
+   - Identify logic clusters that form cohesive behavior
+   - Flag useEffect + useState combinations for custom hooks
+   - Look for reusable data fetching or subscription logic
+   - Check for business logic mixed with presentation
+
+6. **Validate Accessibility (a11y) Basics**
+   - Check semantic HTML usage (button vs div, etc.)
+   - Verify ARIA attributes where needed
+   - Review keyboard navigation support
+   - Check focus management in interactive elements
+   - Validate form label associations
+   - Verify color contrast and visual indicators
+
+7. **Check Key Usage in Lists**
+   - Verify stable, unique keys (not array indices for dynamic lists)
+   - Review key prop placement (on outermost mapped element)
+   - Check for missing keys in fragments
+
+8. **Cross-Reference with React Best Practices**
+   - Compare against React documentation patterns
+   - Check for deprecated patterns (legacy context, findDOMNode, etc.)
+   - Verify controlled vs uncontrolled component consistency
+   - Review error boundary usage for error-prone sections
+   - Check for proper event handler naming (onAction pattern)
+
+## Output Format
+
+```markdown
+## Component Review: [ComponentName]
+
+### Summary
+[2-3 sentence overview of component health]
+
+### Structure Analysis
+| Aspect | Status | Notes |
+|--------|--------|-------|
+| File organization | ✅/⚠️/❌ | ... |
+| Component size | ✅/⚠️/❌ | ... |
+| Single responsibility | ✅/⚠️/❌ | ... |
+| Naming conventions | ✅/⚠️/❌ | ... |
+
+### Props & Interfaces
+| Prop | Type | Issue |
+|------|------|-------|
+| [name] | [type] | [issue or "OK"] |
+
+**Props Count**: X [OK/Warning: consider restructuring]
+
+### State Management
+- **Local State**: [List with assessment]
+- **Derived State Candidates**: [State that could be computed]
+- **Lift Candidates**: [State that should move up]
+
+### Reusability Score: [Low/Medium/High]
+- [Factors affecting reusability]
+- [Specific improvements needed]
+
+### Hook Extraction Candidates
+1. **use[Name]** - [Logic to extract: state + effects]
+2. **use[Name]** - [Logic to extract]
+
+### Accessibility Issues
+- [ ] [Issue]: [Fix suggestion]
+- [ ] [Issue]: [Fix suggestion]
+
+### Key Usage
+- [OK/Issues found with specific locations]
+
+### Recommended Changes
+1. **Critical**: [Change]
+2. **Important**: [Change]
+3. **Nice to have**: [Change]
+
+### Code Examples
+[Before/after snippets for key recommendations]
+```
+
+## Interactive Decisions
+
+Ask the user before proceeding when:
+- Component split would require significant refactoring
+- State management changes would affect parent components
+- Accessibility fixes require design input (focus order, announcements)
+- Hook extraction would create new shared dependencies
+- Props refactoring would affect multiple consumers
+- Breaking changes would require migration across the codebase
