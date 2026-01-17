@@ -1,0 +1,100 @@
+# Design Review
+
+Review system or component design for architectural quality and alignment with best practices.
+
+---
+
+## Context
+
+Gather before analysis:
+- Architecture documentation (README, ARCHITECTURE.md, docs/)
+- Component structure and module organization
+- Dependency graph (package.json, imports, go.mod, etc.)
+- Existing design decisions or ADRs
+- Stated architectural patterns (MVC, hexagonal, etc.)
+
+## Instructions
+
+1. **Map the architecture**
+   - Identify layers, modules, and their responsibilities
+   - Trace key data flows and control flows
+   - Document external dependencies and integration points
+
+2. **Evaluate SOLID principles**
+   - Single Responsibility: Does each module have one reason to change?
+   - Open/Closed: Can behavior be extended without modification?
+   - Liskov Substitution: Are abstractions properly substitutable?
+   - Interface Segregation: Are interfaces focused and minimal?
+   - Dependency Inversion: Do high-level modules depend on abstractions?
+
+3. **Check separation of concerns**
+   - Business logic isolated from infrastructure?
+   - UI/presentation separate from domain?
+   - Data access abstracted appropriately?
+
+4. **Identify coupling issues**
+   - Find circular dependencies between modules
+   - Flag tight coupling (concrete dependencies, shared mutable state)
+   - Note inappropriate intimacy between components
+
+5. **Verify architectural consistency**
+   - Does implementation match documented architecture?
+   - Are patterns applied consistently across codebase?
+   - Identify drift from stated design
+
+6. **Assess scalability and maintainability**
+   - Bottlenecks for horizontal/vertical scaling
+   - Areas requiring high effort to modify
+   - Test isolation capabilities
+
+7. **Cross-reference documentation**
+   - Compare actual vs documented behavior
+   - Flag outdated or missing documentation
+
+## Output Format
+
+```markdown
+## Design Review: [Component/System Name]
+
+### Architecture Summary
+[Brief description of current design]
+
+### Strengths
+- [What works well]
+
+### Issues Found
+
+#### Critical
+| Issue | Location | Impact | Recommendation |
+|-------|----------|--------|----------------|
+| ...   | ...      | ...    | ...            |
+
+#### Moderate
+| Issue | Location | Impact | Recommendation |
+|-------|----------|--------|----------------|
+| ...   | ...      | ...    | ...            |
+
+### SOLID Compliance
+| Principle | Status | Notes |
+|-----------|--------|-------|
+| SRP       | ✓/✗/~  | ...   |
+| OCP       | ✓/✗/~  | ...   |
+| LSP       | ✓/✗/~  | ...   |
+| ISP       | ✓/✗/~  | ...   |
+| DIP       | ✓/✗/~  | ...   |
+
+### Proposed Improvements
+1. [Improvement]: [Tradeoff analysis - effort vs benefit]
+2. ...
+
+### Documentation Gaps
+- [Missing or outdated docs]
+```
+
+## Interactive Decisions
+
+Ask the user when:
+- Multiple valid architectural styles could apply
+- Tradeoffs require business context (e.g., optimize for speed vs maintainability)
+- Breaking changes would be required for improvements
+- Scope is unclear (single component vs entire system)

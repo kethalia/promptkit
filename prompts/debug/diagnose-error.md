@@ -1,0 +1,102 @@
+# Diagnose Error
+
+Systematic error diagnosis to identify root cause and suggest fixes.
+
+---
+
+## Context
+
+Gather the following before diagnosis:
+
+1. **Error message** - Full error text including error type/code
+2. **Stack trace** - Complete stack trace if available
+3. **Relevant code files** - Files mentioned in error or stack trace
+4. **Recent changes** - Git diff or description of recent modifications
+5. **Reproduction steps** - How to trigger the error
+6. **Environment** - Runtime version, OS, dependencies
+
+## Instructions
+
+1. **Parse the error message**
+   - Identify error type (syntax, runtime, type, network, etc.)
+   - Extract key identifiers (file paths, line numbers, variable names)
+   - Note any error codes for documentation lookup
+
+2. **Analyze the stack trace**
+   - Start from the bottom (origin) and work up
+   - Identify the first frame in user code vs library code
+   - Mark the transition points between modules
+
+3. **Examine the failing code**
+   - Read the file and line indicated by the error
+   - Check 20-30 lines of surrounding context
+   - Identify inputs, state, and dependencies at failure point
+
+4. **Distinguish root cause from symptoms**
+   - Symptom: Where the error manifests
+   - Root cause: The actual incorrect code/logic/data
+   - Trace data flow backward from symptom to cause
+
+5. **Review recent changes**
+   - Check git diff for modifications to affected files
+   - Look for changes to dependencies or configuration
+   - Identify if error is regression or new issue
+
+6. **Formulate fix hypotheses**
+   - List 2-3 possible causes ranked by likelihood
+   - For each, describe the fix and potential side effects
+   - Identify which hypothesis can be tested quickest
+
+7. **Verify the diagnosis**
+   - Confirm hypothesis explains all symptoms
+   - Check that fix doesn't break other functionality
+   - Consider edge cases
+
+## Output Format
+
+```markdown
+## Error Summary
+- Type: [error type]
+- Location: [file:line]
+- Message: [condensed message]
+
+## Root Cause Analysis
+[Explanation of what's actually wrong, not just what failed]
+
+## Symptom vs Cause
+- Symptom: [what we observed]
+- Root cause: [underlying issue]
+
+## Fix Options
+
+### Option 1: [Name] (Recommended)
+- Change: [specific code change]
+- Why: [explanation]
+- Risk: [potential side effects]
+
+### Option 2: [Name]
+- Change: [specific code change]
+- Why: [explanation]
+- Risk: [potential side effects]
+
+## Verification
+[How to confirm the fix works]
+```
+
+## Interactive Decisions
+
+**Decision 1: Fix approach**
+- Quick fix (address symptom) vs proper fix (address root cause)?
+- User should choose based on time constraints and risk tolerance
+
+**Decision 2: Scope of fix**
+- Minimal change to affected code only?
+- Broader refactor to prevent similar issues?
+
+**Decision 3: Testing strategy**
+- Add regression test for this specific error?
+- Expand test coverage for affected module?
+
+**Decision 4: If multiple hypotheses remain**
+- Add logging/debugging to narrow down?
+- Test each fix hypothesis in order of likelihood?

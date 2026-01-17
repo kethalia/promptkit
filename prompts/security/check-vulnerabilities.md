@@ -1,0 +1,114 @@
+# Check Vulnerabilities
+
+Quick scan for common security vulnerabilities with actionable fixes.
+
+---
+
+## Context
+
+Gather before starting:
+- Target files or directories to scan
+- Language and framework in use
+- Whether this is new code or existing codebase
+- Known areas of concern (if any)
+
+## Instructions
+
+1. **Scan for hardcoded secrets**
+   - Search for API keys, tokens, passwords in code
+   - Check for AWS keys, private keys, certificates
+   - Look in configuration files, comments, test files
+   - Patterns: `password=`, `api_key=`, `secret`, `token`, `Bearer`
+   - Check for base64-encoded secrets
+
+2. **Identify SQL/NoSQL injection points**
+   - Find string concatenation in queries
+   - Check for unsanitized user input in database operations
+   - Review ORM usage for raw query vulnerabilities
+   - Look for: `execute()`, `query()`, `find()`, `aggregate()` with user input
+
+3. **Find XSS vulnerabilities**
+   - Locate user input rendered in HTML without encoding
+   - Check for `innerHTML`, `dangerouslySetInnerHTML`, `v-html`
+   - Review template variables without auto-escaping
+   - Find JavaScript evaluation of user data (`eval`, `Function()`)
+   - Check URL parameters reflected in output
+
+4. **Check for path traversal**
+   - Find file operations using user-supplied paths
+   - Look for: `../`, path concatenation, `readFile`, `writeFile`
+   - Verify path normalization and validation
+   - Check archive extraction for zip slip
+
+5. **Identify command injection**
+   - Find shell execution with user input
+   - Look for: `exec`, `spawn`, `system`, `popen`, backticks
+   - Check for proper argument escaping
+   - Review subprocess calls
+
+6. **Validate authentication checks**
+   - Verify auth middleware on protected routes
+   - Check for authentication bypass paths
+   - Review session validation logic
+   - Look for timing attacks in comparisons
+
+7. **Verify authorization checks**
+   - Ensure object-level authorization exists
+   - Check for missing permission validations
+   - Look for direct object references without access control
+   - Review admin functionality access
+
+8. **Check for insecure configurations**
+   - Debug mode enabled in production
+   - CORS allowing all origins
+   - Missing security headers
+   - Insecure cookie settings
+
+## Output Format
+
+```markdown
+# Vulnerability Scan Results
+
+**Scanned:** [files/directories]
+**Date:** [date]
+
+## Vulnerabilities Found
+
+### 1. [Vulnerability Type]
+**Severity:** Critical | High | Medium | Low
+**Location:** `file:line`
+
+**Vulnerable Code:**
+```[language]
+[code snippet]
+```
+
+**Issue:** [What makes this vulnerable]
+
+**Fix:**
+```[language]
+[corrected code]
+```
+
+---
+
+[Repeat for each finding]
+
+## Summary
+- Critical: X
+- High: X
+- Medium: X
+- Low: X
+
+## Quick Fixes Checklist
+- [ ] [Action item 1]
+- [ ] [Action item 2]
+```
+
+## Interactive Decisions
+
+Confirm with user:
+- [ ] Which directories/files to prioritize
+- [ ] Whether to scan test files
+- [ ] If deprecated/legacy code should be included
+- [ ] Whether to auto-fix simple issues

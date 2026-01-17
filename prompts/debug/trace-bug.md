@@ -1,0 +1,119 @@
+# Trace Bug
+
+Step-by-step bug tracing through codebase execution flow.
+
+---
+
+## Context
+
+Gather the following before tracing:
+
+1. **Bug description** - What incorrect behavior is observed
+2. **Expected behavior** - What should happen instead
+3. **Reproduction steps** - Exact steps to trigger the bug
+4. **Entry point** - Where execution begins (API endpoint, function, event)
+5. **Relevant inputs** - Data/parameters that trigger the bug
+
+## Instructions
+
+1. **Define the trace boundaries**
+   - Identify the entry point (user action, API call, event trigger)
+   - Identify the expected endpoint (correct output, state change)
+   - Note the actual incorrect endpoint
+
+2. **Map the execution flow**
+   - Start at entry point
+   - Follow function calls, noting file:line for each step
+   - Document data transformations at each step
+   - Track state changes (variables, database, cache)
+
+3. **Create trace checkpoints**
+   - At each major step, document:
+     - Input values
+     - Expected output
+     - Actual output (if known)
+   - Mark where behavior matches expected vs diverges
+
+4. **Identify divergence point**
+   - Find the first checkpoint where actual != expected
+   - This is the bug location (or closest to it)
+   - Examine code between last good checkpoint and divergence
+
+5. **Analyze divergence cause**
+   - Is input data wrong? (trace backward)
+   - Is logic wrong? (examine conditions, calculations)
+   - Is state wrong? (check side effects, race conditions)
+   - Is dependency wrong? (check external calls, libraries)
+
+6. **Document the trace path**
+   - Create visual or textual flow of execution
+   - Highlight the divergence point
+   - Note any suspicious patterns found during trace
+
+7. **Propose and verify fix**
+   - Design fix for the divergence point
+   - Trace forward to confirm fix produces expected output
+   - Check for unintended effects on other code paths
+
+## Output Format
+
+```markdown
+## Bug Summary
+- Observed: [incorrect behavior]
+- Expected: [correct behavior]
+- Trigger: [how to reproduce]
+
+## Execution Trace
+
+### Step 1: [Entry Point]
+- Location: [file:line]
+- Input: [values]
+- Action: [what happens]
+- Status: OK
+
+### Step 2: [Next Function/Operation]
+- Location: [file:line]
+- Input: [values]
+- Action: [what happens]
+- Status: OK
+
+### Step N: [Divergence Point]
+- Location: [file:line]
+- Input: [values]
+- Expected: [what should happen]
+- Actual: [what happens instead]
+- Status: BUG
+
+## Divergence Analysis
+[Why the code behaves incorrectly at this point]
+
+## Fix Proposal
+- Location: [file:line]
+- Change: [specific modification]
+- Rationale: [why this fixes the bug]
+
+## Verification Steps
+1. [Step to verify fix works]
+2. [Step to verify no regression]
+3. [Edge cases to test]
+```
+
+## Interactive Decisions
+
+**Decision 1: Trace depth**
+- Shallow trace (main execution path only)?
+- Deep trace (include helper functions, library calls)?
+
+**Decision 2: At divergence point**
+- Is this the root cause or should we trace further back?
+- Are there multiple divergence points to investigate?
+
+**Decision 3: Fix verification**
+- Manual testing sufficient?
+- Automated test needed?
+- Both manual and automated?
+
+**Decision 4: Documentation**
+- Add inline comments explaining the bug?
+- Update external documentation?
+- Create knowledge base entry for similar bugs?

@@ -1,0 +1,102 @@
+# Generate Test Cases
+
+Generate edge cases and scenarios that catch real bugs.
+
+---
+
+## Context
+
+Before generating cases, gather:
+- Function/component to generate cases for
+- Type definitions, interfaces, or schemas
+- Any existing tests to avoid duplication
+- Domain knowledge about valid/invalid inputs
+
+## Instructions
+
+1. **Analyze function contract**
+   - Input parameters: types, constraints, optionality
+   - Return value: type, possible values, error conditions
+   - Side effects: state changes, external calls
+   - Preconditions and postconditions
+
+2. **Generate boundary conditions**
+   For each input parameter:
+   - **Strings:** empty, whitespace, very long, special characters, unicode
+   - **Numbers:** 0, negative, MAX_VALUE, MIN_VALUE, NaN, Infinity, decimals
+   - **Arrays:** empty, single item, many items, duplicate items, sparse
+   - **Objects:** empty, missing keys, extra keys, null values, nested
+   - **Booleans:** true, false, truthy/falsy values if loosely typed
+   - **Null/Undefined:** explicit null, undefined, missing argument
+
+3. **Identify state combinations**
+   - What valid states can the system be in?
+   - Which combinations are edge cases?
+   - What state transitions should be tested?
+   - Concurrent or async state considerations?
+
+4. **Map error conditions**
+   - Invalid input types
+   - Out-of-range values
+   - Missing required data
+   - External dependency failures
+   - Timeout and race conditions
+
+5. **Create domain-specific cases**
+   - Business rule edge cases
+   - Real-world scenarios that cause issues
+   - Cases from bug reports or production incidents
+   - Regulatory or security requirements
+
+6. **Define expected outcomes**
+   For each test case, specify:
+   - Exact expected return value OR
+   - Expected error type and message OR
+   - Expected state after execution
+   - NOT just "should work" or "should handle gracefully"
+
+## Output Format
+
+```markdown
+## Test Cases for [function/component]
+
+### Input Analysis
+| Parameter | Type | Constraints | Edge Values |
+|-----------|------|-------------|-------------|
+| [name] | [type] | [rules] | [boundaries] |
+
+### Generated Test Cases
+
+#### Happy Path
+| # | Input | Expected Output | Why This Matters |
+|---|-------|-----------------|------------------|
+| 1 | [specific input] | [specific output] | [validates what] |
+
+#### Boundary Conditions
+| # | Input | Expected Output | Edge Being Tested |
+|---|-------|-----------------|-------------------|
+| 1 | [boundary input] | [expected result] | [what boundary] |
+
+#### Error Cases
+| # | Input | Expected Error | Error Condition |
+|---|-------|----------------|-----------------|
+| 1 | [invalid input] | [error type/msg] | [why it fails] |
+
+#### State-Based Cases
+| # | Initial State | Action | Expected State | Validates |
+|---|---------------|--------|----------------|-----------|
+| 1 | [state] | [action] | [result state] | [what] |
+
+### High-Priority Cases
+Cases most likely to catch real bugs:
+1. [Case]: [Why it catches bugs]
+2. [Case]: [Why it catches bugs]
+```
+
+## Interactive Decisions
+
+Ask the user when:
+- Business domain rules are unclear
+- Constraints on inputs are not specified
+- Error handling behavior is not defined
+- Performance edge cases are relevant (large inputs, many concurrent)

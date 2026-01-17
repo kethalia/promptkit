@@ -1,0 +1,115 @@
+# Code Review Checklist
+
+Rapid checklist-style review with pass/fail/warning verdicts per category.
+
+---
+
+## Context
+
+Identify the code to review:
+- Specific files or directories provided by user
+- PR diff via `gh pr diff <PR_NUMBER>`
+- Staged changes via `git diff --cached`
+
+## Instructions
+
+Run through each checklist category. For each item, assign a verdict:
+- **PASS**: No issues found
+- **WARN**: Minor concerns or suggestions
+- **FAIL**: Issues that should be addressed before merge
+
+### 1. Correctness
+
+- [ ] Logic flow matches intended behavior
+- [ ] All code paths return appropriate values
+- [ ] Conditionals cover all cases
+- [ ] Loops terminate correctly
+- [ ] Null/undefined handled properly
+- [ ] Type safety maintained (no unsafe casts)
+- [ ] Async operations awaited correctly
+
+### 2. Security
+
+- [ ] No hardcoded secrets or credentials
+- [ ] User input validated and sanitized
+- [ ] No SQL/command injection vectors
+- [ ] Authentication/authorization checked
+- [ ] Sensitive data not logged
+- [ ] Dependencies don't have known vulnerabilities
+- [ ] No exposed internal errors to users
+
+### 3. Performance
+
+- [ ] No unnecessary loops or iterations
+- [ ] Database queries are optimized (no N+1)
+- [ ] Large data sets paginated or streamed
+- [ ] Expensive operations cached when appropriate
+- [ ] No memory leaks (event listeners, subscriptions)
+- [ ] No blocking operations on main thread
+
+### 4. Maintainability
+
+- [ ] Code is readable without extensive comments
+- [ ] Functions are focused (single responsibility)
+- [ ] No excessive duplication
+- [ ] Naming is clear and consistent
+- [ ] Complex logic is documented
+- [ ] Dependencies are justified
+- [ ] No dead code or unused imports
+
+### 5. Testing
+
+- [ ] New code has corresponding tests
+- [ ] Edge cases are tested
+- [ ] Tests are deterministic (no flaky tests)
+- [ ] Mocks/stubs used appropriately
+- [ ] Test names describe behavior
+- [ ] Coverage maintained or improved
+
+## Output Format
+
+```
+# Code Review Checklist Results
+
+## Summary
+| Category        | Verdict | Issues |
+|-----------------|---------|--------|
+| Correctness     | PASS/WARN/FAIL | N |
+| Security        | PASS/WARN/FAIL | N |
+| Performance     | PASS/WARN/FAIL | N |
+| Maintainability | PASS/WARN/FAIL | N |
+| Testing         | PASS/WARN/FAIL | N |
+
+**Overall: READY / NEEDS WORK / BLOCKED**
+
+## Details
+
+### Correctness: [VERDICT]
+- [PASS] Logic flow matches intended behavior
+- [WARN] `file.ts:42` - Null check missing, could throw if input undefined
+- [FAIL] `file.ts:87` - Infinite loop when array is empty
+
+### Security: [VERDICT]
+- [PASS] No hardcoded secrets
+- [PASS] Input validated
+...
+
+## Action Items
+1. [MUST] Fix: description (`file:line`)
+2. [SHOULD] Address: description (`file:line`)
+3. [COULD] Consider: description (`file:line`)
+```
+
+## Interactive Decisions
+
+1. **After Summary Table**
+   - Ask: "Review complete. Want details on any failing category?"
+   - Options: Show category details / Show all details / Done
+
+2. **If FAIL Items Exist**
+   - Ask: "There are blocking issues. Should I help fix them?"
+   - Options: Fix specific item / List all fixes needed / Continue
+
+3. **Before Finishing**
+   - Ask: "Generate action items for the PR author?"
+   - Options: Yes, generate / No, done
