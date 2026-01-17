@@ -60,7 +60,7 @@ Gather the following before analysis:
 
 ## Output Format
 
-```
+```markdown
 ## Stack Trace Summary
 - Error Type: [type]
 - Error Message: [message]

@@ -57,7 +57,7 @@ Before generating cases, gather:
 
 ## Output Format
 
-```
+```markdown
 ## Test Cases for [function/component]
 
 ### Input Analysis

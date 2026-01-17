@@ -54,7 +54,7 @@ Gather the following before diagnosis:
 
 ## Output Format
 
-```
+```markdown
 ## Error Summary
 - Type: [error type]
 - Location: [file:line]

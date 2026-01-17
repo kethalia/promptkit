@@ -51,7 +51,7 @@ Before writing tests, gather:
 
 ## Output Format
 
-```
+```markdown
 ## Test Analysis
 
 **Code Under Test:** [file path]

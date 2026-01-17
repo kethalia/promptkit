@@ -55,7 +55,7 @@ Before analyzing coverage, gather:
 
 ## Output Format
 
-```
+```markdown
 ## Coverage Analysis
 
 **Source:** [file path]

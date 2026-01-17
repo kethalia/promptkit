@@ -57,7 +57,7 @@ Gather the following before tracing:
 
 ## Output Format
 
-```
+```markdown
 ## Bug Summary
 - Observed: [incorrect behavior]
 - Expected: [correct behavior]

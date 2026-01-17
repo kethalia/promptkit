@@ -74,7 +74,7 @@ Base URL: `https://api.example.com/v1`
 ## Authentication
 
 All endpoints require Bearer token authentication:
-```
+```bash
 Authorization: Bearer <token>
 ```
 
