@@ -1,31 +1,104 @@
-Please review the current changes against our documentation and best software development practices:
+# Review Current Changes
 
-1. **Documentation Consistency Check:**
-   - Compare the changes against relevant documentation (README, API docs, architecture docs, etc.)
-   - For each inconsistency found, present:
-     * What the docs say
-     * What the code now does
-     * Ask me to choose: (a) Update code to match docs, (b) Keep as exception with justification, or (c) Update docs to reflect new approach
+Review uncommitted changes against documentation and best practices.
 
-2. **Best Practices Review:**
-   - Evaluate the changes against industry best practices including:
-     * Code organization and structure
-     * Naming conventions
-     * Error handling
-     * Security considerations
-     * Performance implications
-     * Testing coverage
-     * Code reusability and DRY principle
-     * SOLID principles (where applicable)
-     * Accessibility (for UI changes)
-   - For each best practice concern, present:
-     * The specific issue
-     * Why it matters
-     * Recommended fix
-     * Ask me to choose: (a) Keep as-is with reasoning, or (b) Fix to adhere to best practice
+---
 
-3. **Summary:**
-   - Provide a prioritized list of findings (critical, important, minor)
-   - Highlight any breaking changes or technical debt introduced
+## Context
 
-Please be specific and cite exact file names, line numbers, or code snippets where relevant.
+Before reviewing, gather:
+
+1. **Current Changes**
+   - Staged changes: `git diff --cached`
+   - Unstaged changes: `git diff`
+   - All uncommitted: `git diff HEAD`
+   - Changed files list: `git status --short`
+
+2. **Repository Documentation**
+   - README.md (project overview, conventions)
+   - CONTRIBUTING.md (contribution guidelines)
+   - Architecture docs (docs/architecture*, ARCHITECTURE.md)
+   - API documentation (docs/api*, API.md, OpenAPI specs)
+   - AGENTS.md or similar AI/coding guidelines
+
+3. **Related Code Context**
+   - Files that import/are imported by changed files
+   - Test files for changed modules
+   - Type definitions if applicable
+
+## Instructions
+
+1. **Gather Context**
+   - Run git diff commands to see all changes
+   - Read relevant documentation files
+   - Understand the scope and intent of changes
+
+2. **Documentation Consistency Check**
+   - Compare changes against relevant docs
+   - Identify any conflicts between code and documentation
+   - Note undocumented patterns or conventions being used
+
+3. **Best Practices Review**
+   - Code organization and structure
+   - Naming conventions
+   - Error handling
+   - Security considerations
+   - Performance implications
+   - Testing coverage
+   - DRY principle and code reusability
+   - SOLID principles where applicable
+   - Accessibility for UI changes
+
+4. **Breaking Change Detection**
+   - Public API signature changes
+   - Removed or renamed exports
+   - Changed default values
+   - Modified behavior of existing functions
+
+## Output Format
+
+```
+## Documentation Consistency
+
+### Inconsistencies Found
+- **[Doc File]** vs `code/path.ts:42`
+  - Docs say: [quote]
+  - Code does: [description]
+
+## Best Practices Review
+
+### Critical (Must Fix)
+- [ ] **[Category]** `file/path.ts:42` - Description
+  - Why: Impact explanation
+  - Fix: How to resolve
+
+### Important (Should Fix)
+- [ ] **[Category]** `file/path.ts:87` - Description
+  - Why: Impact explanation
+  - Fix: How to resolve
+
+### Minor (Consider)
+- [ ] **[Category]** `file/path.ts:123` - Description
+  - Suggestion: How to improve
+
+## Summary
+- Breaking changes: [list or "None"]
+- Technical debt introduced: [list or "None"]
+- Overall assessment: [Ready to commit / Needs work]
+```
+
+Categories: `Naming`, `Error Handling`, `Security`, `Performance`, `DRY`, `Structure`, `Accessibility`
+
+## Interactive Decisions
+
+1. **For Each Documentation Inconsistency**
+   - Ask: "How should this be resolved?"
+   - Options: Update code to match docs / Keep code, update docs / Keep as exception
+
+2. **For Each Best Practice Concern**
+   - Ask: "Should this be addressed?"
+   - Options: Fix now / Keep as-is with justification / Add to tech debt backlog
+
+3. **Before Finishing**
+   - Ask: "Ready to proceed? I can help fix issues or prepare a commit."
+   - Options: Fix critical issues / Fix all issues / Proceed to commit / Done
