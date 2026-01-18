@@ -94,6 +94,8 @@ opencode "$(cat prompts/review/pr-review.md)"
 - [performance-optimization.md](prompts/language-specific/react-nextjs/performance-optimization.md) - Fix performance issues
 - [hooks-best-practices.md](prompts/language-specific/react-nextjs/hooks-best-practices.md) - Review hooks usage
 - [nextjs-app-router-migration.md](prompts/language-specific/react-nextjs/nextjs-app-router-migration.md) - Migrate to App Router
+- [extract-constants.md](prompts/language-specific/react-nextjs/extract-constants.md) - Extract hardcoded values into constants
+- [extract-utility-functions.md](prompts/language-specific/react-nextjs/extract-utility-functions.md) - Extract pure utility functions
 
 ### Go
 - [go-idioms-review.md](prompts/language-specific/go/go-idioms-review.md) - Review for idiomatic Go

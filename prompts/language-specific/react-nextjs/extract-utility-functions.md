@@ -1,0 +1,291 @@
+# Extract Pure Utility Functions
+
+Identify and extract pure utility functions from Next.js codebases to improve reusability and testability.
+
+---
+
+## Context
+
+Before analyzing, gather:
+1. The target codebase or specific directories to analyze
+2. Existing utility/helper files in the project
+3. Next.js version (App Router vs Pages Router)
+4. Frontend framework patterns (React hooks, Server Components, Client Components)
+5. Testing setup and conventions
+6. Import path aliases (e.g., `@/utils`, `@/lib`)
+
+## Instructions
+
+1. **Identify Pure Function Candidates**
+   - Functions with NO side effects
+   - Functions that depend ONLY on input parameters
+   - NO external state access (no `useState`, `useContext`, etc.)
+   - NO direct DOM manipulation
+   - NO API calls or I/O operations
+   - NO usage of `this` or closures over external variables
+   - Deterministic: same inputs → same outputs
+   - Repeated logic across multiple components/files
+
+2. **Common Pure Function Patterns in Next.js**
+   - **Data Transformation:** Formatting, mapping, filtering, sorting
+   - **Validation:** Input validation, form validation, schema checks
+   - **Calculation:** Math operations, date calculations, totals
+   - **String Manipulation:** Slugification, truncation, parsing
+   - **Array/Object Utilities:** Deep merge, pick, omit, grouping
+   - **Formatting:** Currency, dates, numbers, phone numbers
+   - **Parsing:** URL params, query strings, JSON
+   - **Type Guards:** TypeScript type narrowing functions
+   - **Predicates:** Boolean-returning test functions
+
+3. **Categorize by Domain**
+   - **Generic Utilities:** String, array, object, math helpers
+   - **Domain-Specific:** Business logic, data transformations
+   - **Formatting:** Display formatting, localization helpers
+   - **Validation:** Input validators, type guards
+   - **Parsers:** Data parsing and transformation
+
+4. **Evaluate Extraction Criteria**
+   For each candidate:
+   - ✅ Pure function (no side effects)
+   - ✅ Used 2+ times OR complex enough to benefit from isolation
+   - ✅ Has clear, testable interface
+   - ✅ Can be named meaningfully
+   - ❌ NOT tightly coupled to a single component
+   - ❌ NOT trivial one-liners (unless repeated 3+ times)
+   - ❌ NOT using React hooks or component lifecycle
+
+5. **Design the Utility**
+   - Clear function name (verb + noun pattern preferred)
+   - TypeScript types for parameters and return value
+   - JSDoc comments for complex logic
+   - Handle edge cases
+   - Consider overloads for flexibility
+
+6. **Determine Location**
+   ```
+   src/
+     utils/          # Generic utilities
+       string.ts
+       array.ts
+       date.ts
+     lib/            # Domain-specific, framework helpers
+       api.ts
+       validation.ts
+       format.ts
+     app/[feature]/
+       utils.ts      # Feature-specific utilities
+   ```
+
+## Output Format
+
+For each utility extraction:
+
+```markdown
+### [Function Name]
+**Category:** Transformation/Validation/Calculation/Formatting/Parsing
+**Purity:** ✅ Pure / ⚠️ Impure (if any side effects)
+**Occurrences:** X times across Y files
+**Confidence:** High/Medium/Low
+**Complexity:** Simple/Medium/Complex
+
+**Current Usages:**
+- `file1:line` - [context]
+- `file2:line` - [context]
+
+**Proposed Utility:**
+```typescript
+// Location: src/utils/[category].ts
+
+/**
+ * [Function description]
+ * @param param1 - [description]
+ * @param param2 - [description]
+ * @returns [description]
+ * @example
+ * [usage example]
+ */
+export function [functionName]([params]: [types]): [ReturnType] {
+  // Implementation
+}
+```
+
+**Migration Example:**
+
+Before (`component.tsx:line`):
+```typescript
+// Inline logic
+const formatted = value
+  .trim()
+  .toLowerCase()
+  .replace(/\s+/g, '-');
+```
+
+After:
+```typescript
+import { slugify } from '@/utils/string';
+
+const formatted = slugify(value);
+```
+
+**Test Example:**
+```typescript
+// src/utils/__tests__/string.test.ts
+describe('slugify', () => {
+  it('converts string to slug format', () => {
+    expect(slugify('Hello World')).toBe('hello-world');
+  });
+});
+```
+
+**Benefits:**
+- Easier to test in isolation
+- Reduces duplication
+- Self-documenting through naming
+- Can be tree-shaken if unused
+```
+
+### Extraction Summary
+
+| Function | Category | Occurrences | LOC | Testable | Priority |
+|----------|----------|-------------|-----|----------|----------|
+| ... | ... | ... | ... | ✅/❌ | ... |
+
+## Next.js-Specific Patterns
+
+### Server Component Safe Utilities
+```typescript
+// src/utils/server.ts
+// Can be used in Server Components or Route Handlers
+export function parseSearchParams(
+  params: URLSearchParams | { [key: string]: string | string[] }
+): Record<string, string> {
+  if (params instanceof URLSearchParams) {
+    return Object.fromEntries(params.entries());
+  }
+  return Object.fromEntries(
+    Object.entries(params).map(([k, v]) => [k, Array.isArray(v) ? v[0] : v])
+  );
+}
+```
+
+### Client-Side Safe Utilities
+```typescript
+// src/utils/client.ts
+// Can be used in Client Components
+export function formatCurrency(
+  amount: number,
+  currency: string = 'USD',
+  locale: string = 'en-US'
+): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+  }).format(amount);
+}
+```
+
+### Type Guards
+```typescript
+// src/utils/type-guards.ts
+export function isNonNullable<T>(value: T): value is NonNullable<T> {
+  return value !== null && value !== undefined;
+}
+
+export function hasProperty<T extends object, K extends PropertyKey>(
+  obj: T,
+  key: K
+): obj is T & Record<K, unknown> {
+  return key in obj;
+}
+```
+
+### Data Transformation
+```typescript
+// src/utils/transform.ts
+export function groupBy<T, K extends PropertyKey>(
+  array: T[],
+  keyFn: (item: T) => K
+): Record<K, T[]> {
+  return array.reduce((acc, item) => {
+    const key = keyFn(item);
+    (acc[key] ??= []).push(item);
+    return acc;
+  }, {} as Record<K, T[]>);
+}
+```
+
+### URL Utilities
+```typescript
+// src/utils/url.ts
+export function buildQueryString(
+  params: Record<string, string | number | boolean | null | undefined>
+): string {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value != null) {
+      query.append(key, String(value));
+    }
+  });
+  return query.toString();
+}
+```
+
+## Interactive Decisions
+
+Pause and ask the user:
+
+1. **Scope of Search**
+   - "Should I search the entire codebase or specific directories? (e.g., `app/`, `components/`)"
+
+2. **Minimum Threshold**
+   - "Extract utilities used:
+     a) 2+ times (standard)
+     b) 3+ times (conservative)
+     c) Even once if complex (aggressive)
+     d) Custom threshold"
+
+3. **Organization Strategy**
+   - "How should utilities be organized?
+     a) By category (`utils/string.ts`, `utils/array.ts`)
+     b) By feature (`app/[feature]/utils.ts`)
+     c) Single file (`utils/index.ts`)
+     d) Lib vs Utils separation (`lib/` for domain, `utils/` for generic)"
+
+4. **Impure Functions**
+   - "Found function with side effects [name]. Should I:
+     a) Skip (only extract pure functions)
+     b) Extract but mark clearly as impure
+     c) Refactor to separate pure logic from side effects"
+
+5. **Testing Strategy**
+   - "Should I also generate unit tests for extracted utilities?"
+
+6. **Implementation**
+   - "Found X utility candidates. Should I:
+     a) Create utility files and show migration examples
+     b) Create files and update all usages
+     c) Show analysis only (no code changes)"
+
+## Exclusions
+
+Do NOT extract:
+- React hooks (`useState`, `useEffect`, etc.)
+- Functions using hooks internally
+- Component render functions
+- Event handlers with side effects (unless pure logic can be separated)
+- API calls or data fetching
+- Functions accessing `window`, `document`, `localStorage`, etc.
+- Functions with closures over component state
+- One-liner trivial operations (unless repeated 3+ times)
+
+## Purity Checklist
+
+A function is pure if ALL of these are true:
+- [ ] No `useState`, `useEffect`, `useContext`, or any React hooks
+- [ ] No external variable access (only uses parameters)
+- [ ] No API calls or async I/O (unless purely computational)
+- [ ] No DOM access (`window`, `document`, etc.)
+- [ ] No mutations of input parameters
+- [ ] No `console.log` or debugging side effects
+- [ ] Deterministic (same inputs = same outputs always)
+- [ ] No `Date.now()`, `Math.random()`, or non-deterministic functions
