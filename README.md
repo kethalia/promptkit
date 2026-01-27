@@ -61,6 +61,7 @@ opencode "$(cat prompts/review/pr-review.md)"
 - [write-unit-tests.md](prompts/testing/write-unit-tests.md) - Generate meaningful unit tests
 - [improve-test-coverage.md](prompts/testing/improve-test-coverage.md) - Find and fill test gaps
 - [generate-test-cases.md](prompts/testing/generate-test-cases.md) - Generate edge cases and scenarios
+- [review-test-quality.md](prompts/testing/review-test-quality.md) - Review tests for meaningless or fake assertions
 
 ### Documentation
 - [generate-readme.md](prompts/docs/generate-readme.md) - Create/update project README
