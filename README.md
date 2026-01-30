@@ -1,116 +1,88 @@
 # AI Prompts for Coding
 
-A collection of reusable prompts for AI coding assistants, optimized for [opencode](https://opencode.ai) and Claude.
+A curated collection of 47 reusable AI coding prompts, served as a documentation site with AI/LLM-optimized access. Built with Nextra v4, optimized for [opencode](https://opencode.ai) and Claude.
 
-## Usage
-
-Copy the prompt content and paste it into your AI assistant, or reference the file path directly if your tool supports it.
-
-### With opencode
+## Quick Start
 
 ```bash
-# Use a prompt directly
-opencode "$(cat prompts/review/pr-review.md)"
-
-# Or reference in conversation
-@prompts/testing/write-unit-tests.md
+pnpm install
+pnpm dev
+# Open http://localhost:3000
 ```
 
-## Prompt Categories
+## Docker Deployment
 
-### General Purpose
+```bash
+# Build and run with Compose
+docker compose up -d
 
-| Category | Description |
-|----------|-------------|
-| [review/](prompts/review/) | Code review, PR review, change analysis |
-| [debug/](prompts/debug/) | Error diagnosis, bug tracing, stack trace analysis |
-| [refactor/](prompts/refactor/) | Code quality improvements, extraction, modernization |
-| [testing/](prompts/testing/) | Unit tests, test coverage, test case generation |
-| [docs/](prompts/docs/) | README generation, function documentation, API docs |
-| [architecture/](prompts/architecture/) | Design review, patterns, tradeoff analysis |
-| [security/](prompts/security/) | Security audits, vulnerability checks, dependency audits |
+# Or build and run manually
+docker build -t ai-prompts .
+docker run -p 3000:3000 ai-prompts
+```
 
-### Language-Specific
+## AI / LLM Access
 
-| Language/Framework | Description |
-|--------------------|-------------|
-| [typescript/](prompts/language-specific/typescript/) | Type safety, migration, fixing type errors |
-| [solidity/](prompts/language-specific/solidity/) | Smart contract audits, gas optimization, Foundry/Hardhat testing |
-| [react-nextjs/](prompts/language-specific/react-nextjs/) | Component review, performance, hooks, App Router migration |
-| [go/](prompts/language-specific/go/) | Idioms, concurrency, error handling |
-| [rust/](prompts/language-specific/rust/) | Ownership, unsafe code, Cargo best practices |
+All prompts are accessible programmatically for AI agents and tools.
 
-## Prompt Index
+| Endpoint | Format | Description |
+|----------|--------|-------------|
+| `GET /llms.txt` | text | Site overview following the [llms.txt spec](https://llmstxt.org/) |
+| `GET /llms-full.txt` | text | All prompt content concatenated with XML `<source>` tags |
+| `GET /api/prompts` | JSON | Catalog of all prompts with metadata |
+| `GET /api/prompts/{category}/{slug}` | markdown | Raw content for a single prompt |
 
-### Review
-- [review-current-changes.md](prompts/review/review-current-changes.md) - Review staged/unstaged changes against docs and best practices
-- [pr-review.md](prompts/review/pr-review.md) - Comprehensive pull request review
-- [code-review-checklist.md](prompts/review/code-review-checklist.md) - Quick checklist-style code review
+### Examples
 
-### Debug
-- [diagnose-error.md](prompts/debug/diagnose-error.md) - Systematic error diagnosis
-- [trace-bug.md](prompts/debug/trace-bug.md) - Step-by-step bug tracing
-- [analyze-stack-trace.md](prompts/debug/analyze-stack-trace.md) - Stack trace analysis and fixes
+```bash
+# Fetch the prompt catalog
+curl http://localhost:3000/api/prompts
 
-### Refactor
-- [improve-code-quality.md](prompts/refactor/improve-code-quality.md) - General code quality improvements
-- [extract-reusable.md](prompts/refactor/extract-reusable.md) - Extract reusable components/utilities
-- [modernize-codebase.md](prompts/refactor/modernize-codebase.md) - Update deprecated patterns
+# Get a specific prompt as raw markdown
+curl http://localhost:3000/api/prompts/review/pr-review
 
-### Testing
-- [write-unit-tests.md](prompts/testing/write-unit-tests.md) - Generate meaningful unit tests
-- [improve-test-coverage.md](prompts/testing/improve-test-coverage.md) - Find and fill test gaps
-- [generate-test-cases.md](prompts/testing/generate-test-cases.md) - Generate edge cases and scenarios
-- [review-test-quality.md](prompts/testing/review-test-quality.md) - Review tests for meaningless or fake assertions
+# Get a specific prompt as JSON (with metadata)
+curl -H "Accept: application/json" http://localhost:3000/api/prompts/review/pr-review
 
-### Documentation
-- [generate-readme.md](prompts/docs/generate-readme.md) - Create/update project README
-- [document-function.md](prompts/docs/document-function.md) - Generate function documentation
-- [generate-api-docs.md](prompts/docs/generate-api-docs.md) - Document API endpoints
+# Fetch all prompts at once for LLM ingestion
+curl http://localhost:3000/llms-full.txt
+```
 
-### Architecture
-- [design-review.md](prompts/architecture/design-review.md) - Review system/component design
-- [suggest-patterns.md](prompts/architecture/suggest-patterns.md) - Recommend design patterns
-- [evaluate-tradeoffs.md](prompts/architecture/evaluate-tradeoffs.md) - Compare approaches with pros/cons
+## Project Structure
 
-### Security
-- [security-audit.md](prompts/security/security-audit.md) - Comprehensive security review
-- [check-vulnerabilities.md](prompts/security/check-vulnerabilities.md) - Check for common vulnerabilities
-- [dependency-audit.md](prompts/security/dependency-audit.md) - Review dependencies for issues
+```
+content/                    # MDX prompt files (source of truth)
+  _meta.ts                  # Sidebar configuration
+  index.mdx                 # Homepage
+  {category}/               # Prompt categories (review/, debug/, etc.)
+    {prompt}.mdx            # Individual prompt files
+app/                        # Next.js App Router
+  layout.tsx                # Root layout (Nextra theme, navbar, footer)
+  [[...mdxPath]]/page.tsx   # Catch-all MDX renderer
+  llms-full.txt/route.ts    # Full LLM context endpoint
+  api/prompts/              # REST API for programmatic access
+components/ui/              # shadcn/ui components
+lib/                        # Shared utilities
+public/llms.txt             # llms.txt standard file
+```
 
-### TypeScript
-- [type-safety-review.md](prompts/language-specific/typescript/type-safety-review.md) - Review type safety
-- [migrate-to-typescript.md](prompts/language-specific/typescript/migrate-to-typescript.md) - Convert JS to TypeScript
-- [fix-type-errors.md](prompts/language-specific/typescript/fix-type-errors.md) - Fix TypeScript errors
+## Adding Prompts
 
-### Solidity
-- [smart-contract-audit.md](prompts/language-specific/solidity/smart-contract-audit.md) - Smart contract security audit
-- [gas-optimization.md](prompts/language-specific/solidity/gas-optimization.md) - Optimize gas usage
-- [upgrade-solidity-version.md](prompts/language-specific/solidity/upgrade-solidity-version.md) - Upgrade Solidity version
-- [foundry-test-coverage.md](prompts/language-specific/solidity/foundry-test-coverage.md) - Foundry test generation
-- [hardhat-test-coverage.md](prompts/language-specific/solidity/hardhat-test-coverage.md) - Hardhat test generation
+Add `.mdx` files to `content/` following the template in [CONTRIBUTING.md](CONTRIBUTING.md). Each prompt should have:
 
-### React/Next.js
-- [component-review.md](prompts/language-specific/react-nextjs/component-review.md) - Review component design
-- [performance-optimization.md](prompts/language-specific/react-nextjs/performance-optimization.md) - Fix performance issues
-- [hooks-best-practices.md](prompts/language-specific/react-nextjs/hooks-best-practices.md) - Review hooks usage
-- [nextjs-app-router-migration.md](prompts/language-specific/react-nextjs/nextjs-app-router-migration.md) - Migrate to App Router
-- [extract-constants.md](prompts/language-specific/react-nextjs/extract-constants.md) - Extract hardcoded values into constants
-- [extract-utility-functions.md](prompts/language-specific/react-nextjs/extract-utility-functions.md) - Extract pure utility functions
+1. An H1 title and one-line description
+2. Sections for Context, Instructions, Output Format, and Interactive Decisions
+3. An entry in the category's `_meta.ts` for sidebar ordering
+4. An entry in `public/llms.txt`
 
-### Go
-- [go-idioms-review.md](prompts/language-specific/go/go-idioms-review.md) - Review for idiomatic Go
-- [concurrency-review.md](prompts/language-specific/go/concurrency-review.md) - Review concurrency patterns
-- [error-handling-review.md](prompts/language-specific/go/error-handling-review.md) - Review error handling
+## Tech Stack
 
-### Rust
-- [ownership-review.md](prompts/language-specific/rust/ownership-review.md) - Review ownership and borrowing
-- [unsafe-code-audit.md](prompts/language-specific/rust/unsafe-code-audit.md) - Audit unsafe blocks
-- [cargo-best-practices.md](prompts/language-specific/rust/cargo-best-practices.md) - Review Cargo configuration
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding or improving prompts.
+- [Next.js 16](https://nextjs.org/) — App Router, standalone output
+- [Nextra v4](https://nextra.site/) — MDX docs framework
+- [Tailwind CSS v4](https://tailwindcss.com/) — Utility-first styling
+- [shadcn/ui](https://ui.shadcn.com/) — UI components
+- [Pagefind](https://pagefind.app/) — Static search indexing
+- [Docker](https://www.docker.com/) — Multi-stage Alpine build for self-hosting
 
 ## License
 
