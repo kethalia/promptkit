@@ -5,8 +5,11 @@ node_modules/
 .next/
 out/
 
-# Pagefind
+# Pagefind (legacy)
 public/_pagefind/
+
+# Fumadocs generated
+.source/
 
 # Environment
 .env*
@@ -18,6 +21,9 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Build artifacts
+tsconfig.tsbuildinfo
 
 # Debug
 npm-debug.log*

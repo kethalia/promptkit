@@ -1,0 +1,11 @@
+{
+  "title": "React & Next.js",
+  "pages": [
+    "component-review",
+    "hooks-best-practices",
+    "performance-optimization",
+    "nextjs-app-router-migration",
+    "extract-constants",
+    "extract-utility-functions"
+  ]
+}

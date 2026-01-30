@@ -1,0 +1,214 @@
+---
+name: code-security
+description: Security-focused code analysis workflows for AI coding assistants. Use when performing security audits, checking for vulnerabilities, or auditing dependencies. Triggers include "security review", "check for vulnerabilities", "is this secure", "audit security", "dependency audit", "find security issues", or when reviewing code that handles authentication, user input, or sensitive data. Covers security audits, vulnerability detection, and dependency security.
+---
+
+# Code Security Skill
+
+Systematic workflows for identifying and fixing security issues. This skill covers three main scenarios:
+1. **Security Audit** - Comprehensive security review
+2. **Check Vulnerabilities** - Find specific security flaws
+3. **Dependency Audit** - Check third-party dependencies
+
+## Quick Reference
+
+| Scenario | Trigger | Reference |
+|----------|---------|-----------|
+| Security Audit | "security review", "audit" | See [security-audit.md](references/security-audit.md) |
+| Vulnerabilities | "check vulnerabilities", "is this secure" | See [check-vulnerabilities.md](references/check-vulnerabilities.md) |
+| Dependencies | "dependency audit", "npm audit" | See [dependency-audit.md](references/dependency-audit.md) |
+
+## Core Security Principles
+
+### Defense in Depth
+
+Never rely on a single security control:
+
+```
+User Input
+    │
+    ▼
+┌─────────────┐
+│ Validation  │ ← Layer 1: Input validation
+└─────────────┘
+    │
+    ▼
+┌─────────────┐
+│ Sanitization│ ← Layer 2: Output encoding
+└─────────────┘
+    │
+    ▼
+┌─────────────┐
+│ Parameterized│ ← Layer 3: Safe APIs
+│   Queries   │
+└─────────────┘
+    │
+    ▼
+┌─────────────┐
+│ Least       │ ← Layer 4: Minimal permissions
+│ Privilege   │
+└─────────────┘
+```
+
+### Security Mindset
+
+- **Trust nothing** - Validate all input, even from "trusted" sources
+- **Fail securely** - Errors should not expose sensitive info
+- **Minimize attack surface** - Remove unused features/endpoints
+- **Keep it simple** - Complex code = more vulnerabilities
+
+## OWASP Top 10 Quick Reference
+
+| # | Vulnerability | Prevention |
+|---|---------------|------------|
+| 1 | Broken Access Control | Verify permissions on every request |
+| 2 | Cryptographic Failures | Use modern crypto, protect data at rest/transit |
+| 3 | Injection | Parameterized queries, input validation |
+| 4 | Insecure Design | Threat modeling, secure design patterns |
+| 5 | Security Misconfiguration | Hardened defaults, remove unused features |
+| 6 | Vulnerable Components | Dependency scanning, updates |
+| 7 | Auth Failures | Strong auth, MFA, session management |
+| 8 | Data Integrity Failures | Verify signatures, secure CI/CD |
+| 9 | Logging Failures | Log security events, protect logs |
+| 10 | SSRF | Validate URLs, allowlist destinations |
+
+## Security Review Severity Levels
+
+| Level | Marker | Examples |
+|-------|--------|----------|
+| 🔴 Critical | Immediate fix | RCE, SQL injection, auth bypass |
+| 🟠 High | Fix this sprint | XSS, IDOR, sensitive data exposure |
+| 🟡 Medium | Fix soon | CSRF, weak crypto, info disclosure |
+| 🔵 Low | Track & plan | Minor info leak, hardening suggestions |
+
+## Quick Security Checks
+
+### Input Handling
+```
+✓ All user input validated
+✓ Input length limits enforced
+✓ Input type verified
+✓ Allowlist over denylist
+```
+
+### Authentication
+```
+✓ Strong password requirements
+✓ Rate limiting on login
+✓ Secure session management
+✓ MFA supported
+```
+
+### Authorization
+```
+✓ Permission checks on every request
+✓ Resource ownership verified
+✓ Role-based access control
+✓ Principle of least privilege
+```
+
+### Data Protection
+```
+✓ Sensitive data encrypted at rest
+✓ TLS for data in transit
+✓ Secrets not in code
+✓ PII handling compliant
+```
+
+### Output Encoding
+```
+✓ HTML encoded for web output
+✓ JSON properly escaped
+✓ SQL parameterized
+✓ Command arguments escaped
+```
+
+## Security Tools Quick Reference
+
+### Static Analysis (SAST)
+
+```bash
+# JavaScript/TypeScript
+npx eslint-plugin-security
+npx njsscan
+
+# Python
+bandit -r src/
+semgrep --config=auto src/
+
+# General
+semgrep --config=p/owasp-top-ten
+```
+
+### Dependency Scanning
+
+```bash
+# JavaScript
+npm audit
+npx snyk test
+
+# Python
+pip-audit
+safety check
+
+# Go
+govulncheck ./...
+
+# Multi-language
+snyk test
+```
+
+### Dynamic Analysis (DAST)
+
+```bash
+# Web applications
+zap-cli quick-scan http://localhost:3000
+nikto -h http://localhost:3000
+```
+
+## Security Review Output Format
+
+```markdown
+## Security Review: [Component/Feature]
+
+### Summary
+- Risk Level: [Critical/High/Medium/Low]
+- Findings: X critical, X high, X medium, X low
+
+### Critical Findings
+🔴 **[Finding Title]**
+- Location: [file:line]
+- Issue: [Description]
+- Impact: [What could happen]
+- Fix: [How to fix]
+
+### High Findings
+🟠 **[Finding Title]**
+- Location: [file:line]
+- Issue: [Description]
+- Impact: [What could happen]
+- Fix: [How to fix]
+
+### Recommendations
+1. [Priority recommendation]
+2. [Additional recommendation]
+
+### Verification
+- [ ] Fixes implemented
+- [ ] Tests added
+- [ ] Re-review completed
+```
+
+## Security Resources
+
+### References
+- OWASP Top 10: https://owasp.org/Top10/
+- OWASP Cheat Sheets: https://cheatsheetseries.owasp.org/
+- CWE Database: https://cwe.mitre.org/
+
+### Secure Coding Guidelines
+- Input validation
+- Output encoding
+- Authentication best practices
+- Cryptography standards
+- Error handling

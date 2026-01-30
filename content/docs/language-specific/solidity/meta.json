@@ -1,0 +1,10 @@
+{
+  "title": "Solidity",
+  "pages": [
+    "smart-contract-audit",
+    "gas-optimization",
+    "upgrade-solidity-version",
+    "foundry-test-coverage",
+    "hardhat-test-coverage"
+  ]
+}

@@ -1,0 +1,234 @@
+---
+name: code-debug
+description: Systematic debugging workflows for AI coding assistants. Use when diagnosing errors, tracing bugs, or analyzing stack traces. Triggers include "debug this", "why is this failing", "fix this error", "trace this bug", "explain this stack trace", error messages, stack traces, or when user describes unexpected behavior. Covers error diagnosis, bug tracing, and stack trace analysis.
+---
+
+# Code Debug Skill
+
+Systematic workflows for debugging software issues. This skill covers three main scenarios:
+1. **Diagnose Error** - Understand and fix error messages
+2. **Trace Bug** - Find the root cause of unexpected behavior
+3. **Analyze Stack Trace** - Read and interpret stack traces
+
+## Quick Reference
+
+| Scenario | Trigger | Reference |
+|----------|---------|-----------|
+| Diagnose Error | Error message, exception, "why this error" | See [diagnose-error.md](references/diagnose-error.md) |
+| Trace Bug | "not working", unexpected behavior | See [trace-bug.md](references/trace-bug.md) |
+| Stack Trace | Stack trace pasted, "explain this trace" | See [analyze-stack-trace.md](references/analyze-stack-trace.md) |
+
+## Core Debugging Principles
+
+### The Scientific Method for Debugging
+
+```
+1. OBSERVE    → What exactly is happening?
+2. HYPOTHESIZE → What could cause this?
+3. PREDICT    → If hypothesis is true, what else should we see?
+4. TEST       → Verify the prediction
+5. ITERATE    → Refine or try next hypothesis
+```
+
+### Debugging Mindset
+
+- **Don't assume** - Verify everything, even "obvious" things
+- **Reproduce first** - Can't fix what you can't reproduce
+- **Isolate the problem** - Narrow down the scope
+- **Change one thing at a time** - Otherwise you won't know what fixed it
+- **Read the error message** - It often tells you exactly what's wrong
+
+### Information Gathering
+
+When debugging, collect:
+
+```
+Essential Info:
+├── Error message (exact, complete)
+├── Stack trace (full)
+├── Steps to reproduce
+├── Expected vs actual behavior
+├── When it started (what changed?)
+└── Environment (OS, versions, config)
+```
+
+## Quick Diagnosis Framework
+
+### Error Categories
+
+| Category | Examples | Typical Cause |
+|----------|----------|---------------|
+| **Syntax** | SyntaxError, ParseError | Typos, missing brackets |
+| **Type** | TypeError, ClassCastException | Wrong data type |
+| **Reference** | ReferenceError, NullPointerException | Undefined/null access |
+| **Logic** | Wrong output, infinite loop | Algorithm error |
+| **Runtime** | OutOfMemory, Timeout | Resource exhaustion |
+| **External** | NetworkError, ConnectionRefused | Dependency failure |
+
+### First Response by Error Type
+
+**Syntax Error:**
+```
+1. Check the line number indicated
+2. Look for missing/extra brackets, quotes, semicolons
+3. Check for typos in keywords
+```
+
+**Type Error:**
+```
+1. Check what type the variable actually is
+2. Trace where it gets its value
+3. Add type checking/validation
+```
+
+**Null/Undefined Error:**
+```
+1. Identify which variable is null
+2. Trace where it should be set
+3. Add null checks or fix the source
+```
+
+**Import/Module Error:**
+```
+1. Verify the module is installed
+2. Check the import path/name
+3. Check for circular dependencies
+```
+
+## Debugging Tools Quick Reference
+
+### JavaScript/Node.js
+```javascript
+// Console methods
+console.log(variable);
+console.table(array);
+console.trace();  // Print stack trace
+console.time('label'); / console.timeEnd('label');
+
+// Debugger
+debugger;  // Breakpoint in code
+
+// Node.js
+node --inspect script.js  // Chrome DevTools
+```
+
+### Python
+```python
+# Print debugging
+print(f"variable = {variable}")
+print(f"{variable=}")  # Python 3.8+
+
+# Debugger
+import pdb; pdb.set_trace()  # or breakpoint()
+
+# Better traceback
+import traceback
+traceback.print_exc()
+```
+
+### Go
+```go
+// Print debugging
+fmt.Printf("variable = %+v\n", variable)
+
+// Debugger
+import "runtime/debug"
+debug.PrintStack()
+
+// Delve debugger
+dlv debug main.go
+```
+
+### Browser
+```javascript
+// DevTools
+debugger;  // Breakpoint
+console.log(JSON.stringify(obj, null, 2));
+
+// Network tab - check API calls
+// Sources tab - set breakpoints
+// Console - test expressions
+```
+
+## Common Debug Patterns
+
+### Binary Search Debugging
+
+When bug is somewhere in a large codebase:
+
+```
+1. Find a known-good state and known-bad state
+2. Test the midpoint
+3. Narrow to the half that contains the bug
+4. Repeat until found
+```
+
+Works for: git bisect, code sections, data ranges
+
+### Rubber Duck Debugging
+
+Explain the problem out loud (or to an AI):
+
+```
+1. Explain what the code should do
+2. Explain what it actually does
+3. Walk through line by line
+4. The act of explaining often reveals the bug
+```
+
+### Printf/Log Debugging
+
+Strategic logging to trace execution:
+
+```python
+def process(data):
+    print(f">>> Entering process with {len(data)} items")
+    for i, item in enumerate(data):
+        print(f"  Processing item {i}: {item}")
+        result = transform(item)
+        print(f"  Result: {result}")
+    print(f"<<< Exiting process")
+```
+
+## Output Format
+
+When providing debugging help:
+
+```markdown
+## Diagnosis
+
+### Error Identified
+[What the error means]
+
+### Root Cause
+[Why it's happening]
+
+### Location
+[File:line or code section]
+
+### Fix
+[Specific code change]
+
+### Prevention
+[How to avoid in the future]
+```
+
+## Integration Tips
+
+### Getting Better Bug Reports
+
+Ask for:
+1. Exact error message (copy-paste, not paraphrase)
+2. Full stack trace
+3. Minimal reproduction steps
+4. What changed recently
+5. Environment details
+
+### When to Escalate
+
+Consider deeper investigation when:
+- Bug is intermittent/flaky
+- Bug only happens in production
+- Bug involves concurrency
+- Multiple systems are involved
+- Performance degradation over time

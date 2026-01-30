@@ -1,0 +1,99 @@
+---
+title: "Improve Test Coverage"
+description: "Find gaps in test coverage and add tests that verify real behavior."
+---
+
+# Improve Test Coverage
+
+Find gaps in test coverage and add tests that verify real behavior.
+
+---
+
+## Context
+
+Before analyzing coverage, gather:
+- Source files to analyze
+- Existing test files for those sources
+- Any coverage reports if available
+- Test framework and patterns in use
+
+## Instructions
+
+1. **Map existing test coverage**
+   - List all functions/methods in the source
+   - For each, identify which tests exercise it
+   - Note what inputs/scenarios each test covers
+   - Track which code branches are tested
+
+2. **Identify untested code paths**
+   - Conditional branches not covered (if/else, switch cases)
+   - Error handling paths never triggered
+   - Edge cases not represented in test inputs
+   - Integration points between functions
+
+3. **Audit existing test quality**
+   - Flag tests with no assertions or only trivial assertions
+   - Find tests that mock away the code under test
+   - Identify tests that pass regardless of implementation
+   - Look for tests that only check "doesn't throw"
+
+4. **Categorize fake tests**
+   A test is fake/meaningless if:
+   - It mocks the function it's supposed to test
+   - It only asserts that a mock was called
+   - It has no assertions at all
+   - Its assertions are tautological (always true)
+   - It would pass with an empty implementation
+
+5. **Prioritize coverage gaps**
+   - HIGH: Core business logic without tests
+   - HIGH: Error handling for likely failure modes
+   - MEDIUM: Edge cases for complex functions
+   - MEDIUM: Integration between components
+   - LOW: Simple getters/setters, trivial code
+
+6. **Write tests to fill gaps**
+   - Focus on highest-priority gaps first
+   - Ensure new tests execute real code
+   - Include specific assertions on behavior
+   - Verify tests fail when implementation is broken
+
+## Output Format
+
+```markdown
+## Coverage Analysis
+
+**Source:** [file path]
+**Existing Tests:** [test file path]
+
+### Coverage Summary
+- Functions with tests: X/Y
+- Estimated branch coverage: Z%
+
+### Untested Code
+| Location | Type | Priority | Risk |
+|----------|------|----------|------|
+| [line/function] | [branch/error/edge] | [HIGH/MED/LOW] | [what could break] |
+
+### Fake/Weak Tests Found
+| Test Name | Problem | Fix |
+|-----------|---------|-----|
+| [test] | [issue] | [how to fix] |
+
+### Recommended New Tests
+1. [Test case]: [What it verifies]
+2. [Test case]: [What it verifies]
+...
+
+## New Tests
+
+[Test code for highest-priority gaps]
+```
+
+## Interactive Decisions
+
+Ask the user when:
+- Unclear if a code path is intentionally untested (dead code)
+- Test would require significant setup or infrastructure
+- Existing test appears fake but might have external verification
+- Coverage tool integration would help analysis

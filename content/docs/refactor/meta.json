@@ -1,0 +1,9 @@
+{
+  "title": "Refactor",
+  "pages": [
+    "improve-code-quality",
+    "extract-reusable",
+    "modernize-codebase",
+    "cleanup-unused-code"
+  ]
+}

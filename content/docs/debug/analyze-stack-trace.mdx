@@ -1,0 +1,139 @@
+---
+title: "Analyze Stack Trace"
+description: "Parse and explain stack traces to identify error origin and fixes."
+---
+
+# Analyze Stack Trace
+
+Parse and explain stack traces to identify error origin and fixes.
+
+---
+
+## Context
+
+Gather the following before analysis:
+
+1. **Complete stack trace** - Full trace, not truncated
+2. **Error message** - The error type and message at the top
+3. **Language/runtime** - To interpret frame format correctly
+4. **Application code paths** - To distinguish app code from libraries
+
+## Instructions
+
+1. **Parse the stack trace structure**
+   - Identify the error type and message (usually at top)
+   - Count total frames
+   - Note the reading direction (top-to-bottom or bottom-to-top)
+   - Identify language-specific format (file:line:column, method signatures)
+
+2. **Categorize each frame**
+   - Mark as: application code, library code, or runtime/system
+   - For each frame extract:
+     - File path
+     - Line number
+     - Function/method name
+     - Class/module (if applicable)
+
+3. **Identify the originating error**
+   - Find the deepest frame where error was thrown/raised
+   - Distinguish between: error origin, error propagation, error handling
+   - Note if error was wrapped or re-thrown
+
+4. **Trace propagation path**
+   - Follow how error bubbles up through frames
+   - Identify any catch/handle points that re-throw
+   - Note any error transformation (wrapping, chaining)
+
+5. **Highlight relevant application code**
+   - Focus on frames within your codebase
+   - Read the code at each application frame
+   - Understand what each function was trying to do
+
+6. **Cross-reference known patterns**
+   - Common error patterns:
+     - NullPointerException/TypeError: accessing undefined
+     - IndexOutOfBounds: array/list access
+     - ConnectionError: network/database issues
+     - ParseError: malformed input data
+     - PermissionError: access control
+   - Match error to known pattern and typical causes
+
+7. **Determine likely cause**
+   - Based on error type, location, and context
+   - Consider: bad input, incorrect state, missing resource, logic error
+   - Rank causes by likelihood
+
+## Output Format
+
+```markdown
+## Stack Trace Summary
+- Error Type: [type]
+- Error Message: [message]
+- Total Frames: [count]
+- Origin Frame: [file:line]
+
+## Frame-by-Frame Analysis
+
+### Frame 1 (Top/Most Recent)
+- Location: [file:line]
+- Function: [name]
+- Type: [app/library/runtime]
+- Role: [origin/propagation/handler]
+- Notes: [relevant context]
+
+### Frame 2
+...
+
+### Frame N (Bottom/Oldest)
+...
+
+## Error Origin
+- File: [path]
+- Line: [number]
+- Code: [snippet]
+- What failed: [explanation]
+
+## Propagation Path
+[How error traveled from origin to where it was caught/logged]
+
+## Pattern Match
+- Matches: [known error pattern]
+- Common causes for this pattern:
+  1. [cause 1]
+  2. [cause 2]
+  3. [cause 3]
+
+## Likely Cause
+[Most probable explanation based on analysis]
+
+## Suggested Fixes
+1. [Primary fix with code example]
+2. [Alternative fix if applicable]
+
+## Prevention
+[How to prevent similar errors in future]
+```
+
+## Interactive Decisions
+
+**Decision 1: Investigation depth**
+- Analyze only application frames?
+- Include library frame analysis for deeper understanding?
+
+**Decision 2: If stack trace is incomplete**
+- Request full stack trace?
+- Proceed with available information and note limitations?
+
+**Decision 3: Multiple possible causes**
+- Which to investigate first?
+- Add debugging to narrow down?
+
+**Decision 4: Fix approach**
+- Fix at error origin?
+- Add defensive check higher in call stack?
+- Both (defense in depth)?
+
+**Decision 5: Error handling improvement**
+- Add better error handling at propagation points?
+- Improve error messages for debugging?
+- Add error monitoring/alerting?

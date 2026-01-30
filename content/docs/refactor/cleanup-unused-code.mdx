@@ -1,0 +1,217 @@
+---
+title: "Cleanup Unused Code and Files"
+description: "Systematically identify and remove unused code, files, and dependencies from the repository."
+---
+
+# Cleanup Unused Code and Files
+
+Systematically identify and remove unused code, files, and dependencies from the repository.
+
+---
+
+## Context
+
+Before analyzing, gather:
+1. Repository structure and primary language(s)
+2. Build configuration files (`package.json`, `Cargo.toml`, `go.mod`, etc.)
+3. Documentation files (README, CONTRIBUTING, etc.)
+4. Test files and test runners
+5. Any monorepo or workspace configuration
+
+## Instructions
+
+### 1. File-Level Analysis
+
+**Identify unused files:**
+- Source files not imported/required anywhere
+- Test files without corresponding source code
+- Configuration files for removed tools
+- Duplicate files (exact or near-exact copies)
+- Empty or stub files with no content
+- Old backup files (`.bak`, `.old`, etc.)
+
+**Check documentation:**
+- Files referenced in docs but don't exist
+- Files that exist but aren't documented
+- Broken internal links
+- Outdated examples or references
+
+### 2. Code-Level Analysis
+
+**Find unused code:**
+- Exported functions/classes never imported
+- Private/internal functions never called
+- Unused variables and constants
+- Commented-out code blocks (>10 lines)
+- Unreachable code (after returns, in dead branches)
+- Unused type definitions/interfaces
+
+**Identify dead imports:**
+- Imported modules never used
+- Wildcard imports when only subset needed
+- Duplicate imports
+
+### 3. Dependency Analysis
+
+**Check package dependencies:**
+- Dependencies in `package.json`/`Cargo.toml`/etc. not imported anywhere
+- Dev dependencies for removed tools
+- Duplicate dependencies with different versions
+- Deprecated packages with modern alternatives
+
+**Run available tools:**
+- Use `depcheck` for JavaScript/TypeScript
+- Use `cargo-machete` for Rust
+- Use language-specific unused dependency checkers
+
+### 4. Cross-Reference Analysis
+
+For documentation repositories (like prompt collections):
+- List all files in target directories
+- Cross-reference with index/README listings
+- Identify mismatches (documented but missing, or undocumented but present)
+- Check for duplicate or overlapping content
+
+### 5. Safety Checks
+
+**Before recommending deletion:**
+- Check if file is referenced in build scripts
+- Verify not used in CI/CD pipelines
+- Confirm not loaded dynamically (require/import with variables)
+- Check for string references to file paths
+- Verify not referenced in environment-specific code
+
+## Output Format
+
+### Phase 1: Analysis Report
+
+```markdown
+## Cleanup Analysis Report
+
+### Summary
+- Total files scanned: X
+- Unused files found: Y
+- Unused code blocks: Z
+- Unused dependencies: N
+- Potential savings: ~X KB / Y lines
+
+### 1. Unused Files (Priority: High)
+
+| File | Reason | Safe to Delete | Risk |
+|------|--------|----------------|------|
+| `path/to/file.js` | Never imported | Yes | Low |
+| `old/config.yml` | Tool no longer used | Yes | Low |
+| `utils/helper.ts` | All exports unused | Verify tests first | Medium |
+
+### 2. Unused Code Blocks (Priority: Medium)
+
+| Location | Type | Description | Lines to Remove |
+|----------|------|-------------|-----------------|
+| `src/app.ts:45-78` | Dead function | `oldProcess()` never called | 34 |
+| `lib/utils.ts:12-15` | Commented code | Old implementation | 4 |
+
+### 3. Unused Dependencies (Priority: Medium)
+
+| Package | Type | Reason | Action |
+|---------|------|--------|--------|
+| `lodash` | dependency | Never imported | Remove |
+| `jest-watch-typeahead` | devDependency | Jest removed | Remove |
+
+### 4. Documentation Issues (Priority: Low)
+
+| Issue | Type | Action |
+|-------|------|--------|
+| README links to deleted `docs/old-guide.md` | Broken link | Update README |
+| `prompts/new-feature.md` exists but not in index | Undocumented | Add to README or remove |
+
+### 5. Recommendations
+
+**Safe to remove immediately (Low risk):**
+- Empty files
+- Obvious backup files
+- Dependencies confirmed unused
+
+**Needs verification (Medium risk):**
+- Files that might be dynamically loaded
+- Code that might be used in non-standard ways
+
+**Do not remove (High risk):**
+- Configuration files still potentially used
+- Files referenced in external documentation
+```
+
+### Phase 2: Confirmation
+
+After presenting analysis, ask:
+
+```
+Found X items to clean up. How would you like to proceed?
+
+1. Show me the full list of files to delete
+2. Delete low-risk items only (automated)
+3. Delete specific items (I'll choose)
+4. Delete everything recommended
+5. Generate cleanup script for manual review
+```
+
+### Phase 3: Execution
+
+When approved, perform cleanup:
+
+1. **Create backup branch** (if not already on feature branch)
+   ```bash
+   git checkout -b cleanup/remove-unused-code
+   ```
+
+2. **Remove files** in order of safety:
+   - Empty/backup files first
+   - Unused source files
+   - Update documentation references
+   - Remove dependencies
+   - Clean up imports in remaining files
+
+3. **Verify after each batch:**
+   - Run linter/type checker
+   - Run tests
+   - Run build
+   - Ensure no new errors introduced
+
+4. **Create commit** with detailed message:
+   ```
+   refactor: remove unused code and files
+
+   - Removed X unused files
+   - Cleaned up Y unused code blocks
+   - Removed Z unused dependencies
+   - Updated documentation references
+
+   Estimated reduction: X KB, Y lines
+   ```
+
+## Interactive Decisions
+
+1. **After Initial Scan**
+   - "Found X potential items. Continue with deep analysis? (May take longer)"
+
+2. **On Ambiguous Files**
+   - "File `X` might be used in [scenario]. Keep it? (yes/no/needs investigation)"
+
+3. **Before Mass Deletion**
+   - "About to remove X files. Create backup branch first? (recommended)"
+
+4. **On Test Failures**
+   - "Tests failed after removing X. Restore it? (yes/investigate/keep changes)"
+
+5. **On Documentation Mismatches**
+   - "File exists but not documented. Add to docs or remove file?"
+
+6. **Final Confirmation**
+   - "Cleanup complete. Run full test suite before committing? (recommended)"
+
+## Notes
+
+- **Be conservative**: When in doubt, flag for review rather than auto-delete
+- **Test incrementally**: Don't remove everything at once
+- **Document decisions**: Note why certain items were kept despite appearing unused
+- **Check git history**: Recently deleted files might indicate false positive
+- **Respect .gitignore**: Files ignored by git might be generated/temporary

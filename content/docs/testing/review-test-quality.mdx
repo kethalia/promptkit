@@ -1,0 +1,179 @@
+---
+title: "Review Test Quality"
+description: "Identify meaningless, fake, or ineffective tests that don't actually validate code behavior."
+---
+
+# Review Test Quality
+
+Identify meaningless, fake, or ineffective tests that don't actually validate code behavior.
+
+---
+
+## Context
+
+Before reviewing, gather:
+- Test files to analyze (user specifies: file, directory, or entire codebase)
+- Corresponding source files for the tests
+- Test framework in use (detect from package.json, pyproject.toml, Cargo.toml, go.mod)
+- Coverage configuration if available
+
+## Instructions
+
+1. **Run tests and gather coverage**
+   - Detect test runner from project configuration
+   - Run the test suite to verify tests pass
+   - Generate coverage report with JSON output:
+     - Jest/Vitest: `--coverage --coverageReporters=json`
+     - pytest: `--cov --cov-report=json`
+     - Go: `go test -coverprofile=coverage.out`
+     - Rust: `cargo llvm-cov --json` or `cargo tarpaulin --out Json`
+   - Flag any failing tests (must be fixed before quality review)
+
+2. **Scan for anti-patterns**
+
+   Check each test for these categories of meaningless tests:
+
+   **Missing/Empty Assertions**
+   - No assertions in test body
+   - Commented-out assertions (`// expect(...)`)
+   - Skipped tests (`it.skip`, `@pytest.mark.skip`, `t.Skip()`)
+
+   **Tautological/Circular Assertions**
+   - Asserting a constant equals itself: `const x = 10; expect(x).toBe(10)`
+   - Using the function under test to generate expected value: `expect(fn(x)).toBe(fn(x))`
+   - Comparing object to itself: `expect(result).toEqual(result)`
+
+   **Mock Abuse**
+   - Mocking the subject under test: `jest.mock('./moduleBeingTested')`
+   - Self-satisfied tests: mock returns X, assertion checks for X
+   - Mock-only assertions: only verifying mocks were called, not results
+
+   **Weak Assertions**
+   - Overuse of `expect.anything()` or `expect.any()`
+   - Type-only checks: `expect(typeof result).toBe('object')`
+   - Truthy-only checks when specific values expected: `expect(result).toBeTruthy()`
+   - Existence checks without value verification: `expect(result).toBeDefined()`
+
+   **Async Issues**
+   - Missing `await` on async calls
+   - `.then()` without return (assertions never run)
+   - Empty `waitFor` callbacks: `waitFor(() => {})`
+   - Fire-and-forget promises
+
+   **Coverage Gaming (Line Hitters)**
+   - Functions called but return values not asserted
+   - High line coverage with low assertion count
+   - Loops executed without verifying iteration results
+
+   **Snapshot Abuse**
+   - Giant snapshots (hundreds of lines)
+   - Snapshot-only testing without behavioral assertions
+   - Frequent snapshot updates without review
+
+   **Implementation Testing**
+   - Accessing private/internal members (`obj._privateField`)
+   - Using reflection to test private methods
+   - Testing internal state instead of behavior
+
+   **Test Pollution**
+   - Tests that depend on execution order
+   - Shared mutable state between tests
+   - Tests that fail in isolation but pass in suite
+
+   **Other Anti-Patterns**
+   - Happy path only (no edge cases, error conditions)
+   - Exception swallowing in try/catch
+   - Hardcoded wait times (`setTimeout`, `sleep`)
+   - Testing side effects (logging) but not core behavior
+
+3. **Correlate coverage with assertions**
+   - Parse test files to count assertions per test
+   - Map covered lines to test files (where framework supports)
+   - Calculate assertion density: `assertions / lines_covered`
+   - Flag tests where `lines_covered >> assertions` as line hitters
+   - Compare branch coverage vs line coverage (large gap = happy path only)
+
+4. **Trace source execution**
+   For each test, verify it:
+   - Imports and invokes the actual source code
+   - Tests observable behavior, not implementation details
+   - Has assertions that would fail if implementation changed
+   - Covers the code path it claims to test
+
+5. **Categorize findings by severity**
+   - **CRITICAL**: Tests that always pass (no assertions, mocking subject, tautological)
+   - **HIGH**: Tests with circular assertions, mock-only verification
+   - **MEDIUM**: Weak assertions, async issues, snapshot abuse
+   - **LOW**: Style issues, missing edge cases, minor improvements
+
+## Output Format
+
+```markdown
+## Test Quality Review
+
+**Scope:** [files reviewed]
+**Test Runner:** [detected]
+**Test Results:** X passed, Y failed, Z skipped
+
+### Summary
+| Metric | Value |
+|--------|-------|
+| Total tests analyzed | X |
+| Meaningless tests found | Y |
+| Tests with weak assertions | Z |
+| Line coverage | A% |
+| Branch coverage | B% |
+| Assertion density | C assertions/100 lines covered |
+
+### Critical: Tests That Always Pass
+| Test | File:Line | Anti-Pattern | Why It's Meaningless |
+|------|-----------|--------------|----------------------|
+| [test name] | [location] | [pattern] | [explanation] |
+
+### High: Tautological/Circular Tests
+| Test | File:Line | Issue | Code Example |
+|------|-----------|-------|--------------|
+| [test name] | [location] | [issue type] | [problematic code] |
+
+### Medium: Weak Assertions / Async Issues
+| Test | File:Line | Issue | Suggestion |
+|------|-----------|-------|------------|
+| [test name] | [location] | [issue type] | [how to fix] |
+
+### Low: Minor Issues
+| Test | File:Line | Issue |
+|------|-----------|-------|
+| [test name] | [location] | [issue type] |
+
+### Coverage vs Assertions (Line Hitter Detection)
+| Test File | Lines Covered | Assertions | Density | Status |
+|-----------|---------------|------------|---------|--------|
+| [file] | [count] | [count] | [ratio] | [OK/WARNING/LINE HITTER] |
+
+### Recommendations
+1. [DELETE] `file:line` - [reason: cannot be fixed meaningfully]
+2. [REWRITE] `file:line` - [what needs to change]
+3. [FIX] `file:line` - [specific fix needed]
+
+### Quality Score
+- Meaningful tests: X / Y (Z%)
+- False confidence: W% coverage that doesn't verify behavior
+```
+
+## Interactive Decisions
+
+1. **Before Running Tests**
+   - Ask: "Run tests with coverage? This will execute the test suite."
+   - Options: Run with coverage / Static analysis only
+
+2. **After Critical Issues Found**
+   - Ask: "Found X tests that always pass. How to proceed?"
+   - Options: Show details / Continue to other issues / Stop here
+
+3. **For Ambiguous Cases**
+   - Ask: "This test only checks types/existence. Intentional?"
+   - Options: Flag as issue / Mark acceptable / Skip
+
+4. **At Completion**
+   - Ask: "What output do you need?"
+   - Options: Full report / Summary only / Export for CI

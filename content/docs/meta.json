@@ -1,0 +1,19 @@
+{
+  "title": "Docs",
+  "pages": [
+    "index",
+    "---General Purpose---",
+    "review",
+    "debug",
+    "refactor",
+    "testing",
+    "documentation",
+    "architecture",
+    "security",
+    "planning",
+    "---Language Specific---",
+    "language-specific",
+    "---Skills---",
+    "skills"
+  ]
+}

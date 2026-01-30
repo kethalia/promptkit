@@ -1,0 +1,347 @@
+---
+title: "Foundry Test Coverage"
+description: "Generate comprehensive Foundry tests with unit tests, fuzz tests, and invariant tests that verify actual contract behavior through meaningful assertions."
+---
+
+# Foundry Test Coverage
+
+Generate comprehensive Foundry tests with unit tests, fuzz tests, and invariant tests that verify actual contract behavior through meaningful assertions.
+
+---
+
+## Context
+
+Gather the following before starting:
+- Contract source files to test
+- Existing test files and patterns in the codebase
+- foundry.toml configuration
+- forge-std version in use
+- Any mock contracts or test utilities already available
+- Contract dependencies and external integrations
+
+## Instructions
+
+1. **Analyze contract interface and state**
+   - List all public/external functions
+   - Identify state variables and their access patterns
+   - Map function dependencies and state transitions
+   - Document expected invariants
+   - Identify privileged roles and access controls
+
+2. **Set up test file structure**
+   ```solidity
+   // SPDX-License-Identifier: MIT
+   pragma solidity ^0.8.20;
+
+   import {Test, console2} from "forge-std/Test.sol";
+   import {ContractUnderTest} from "../src/ContractUnderTest.sol";
+
+   contract ContractUnderTestTest is Test {
+       ContractUnderTest public target;
+       address public owner;
+       address public user1;
+       address public user2;
+
+       function setUp() public {
+           owner = makeAddr("owner");
+           user1 = makeAddr("user1");
+           user2 = makeAddr("user2");
+           
+           vm.startPrank(owner);
+           target = new ContractUnderTest();
+           vm.stopPrank();
+       }
+   }
+   ```
+
+3. **Write unit tests for each function**
+   
+   For each function, test:
+   - Happy path with valid inputs
+   - Access control (unauthorized callers should revert)
+   - Input validation (boundary values, zero addresses)
+   - State changes (verify storage updates)
+   - Return values (verify correctness)
+   - Events (verify emission with correct parameters)
+
+   ```solidity
+   function test_Transfer_UpdatesBalances() public {
+       uint256 amount = 100e18;
+       deal(address(token), user1, amount);
+       
+       vm.prank(user1);
+       token.transfer(user2, amount);
+       
+       assertEq(token.balanceOf(user1), 0, "sender balance not decremented");
+       assertEq(token.balanceOf(user2), amount, "recipient balance not incremented");
+   }
+
+   function test_Transfer_EmitsEvent() public {
+       uint256 amount = 100e18;
+       deal(address(token), user1, amount);
+       
+       vm.expectEmit(true, true, false, true);
+       emit Transfer(user1, user2, amount);
+       
+       vm.prank(user1);
+       token.transfer(user2, amount);
+   }
+
+   function test_Transfer_RevertsWhenInsufficientBalance() public {
+       vm.prank(user1);
+       vm.expectRevert(InsufficientBalance.selector);
+       token.transfer(user2, 1);
+   }
+   ```
+
+4. **Add fuzz tests for numerical inputs**
+   
+   ```solidity
+   function testFuzz_Transfer_AnyAmount(uint256 amount) public {
+       amount = bound(amount, 0, type(uint256).max);
+       deal(address(token), user1, amount);
+       
+       vm.prank(user1);
+       token.transfer(user2, amount);
+       
+       assertEq(token.balanceOf(user2), amount);
+   }
+
+   function testFuzz_Deposit_MaintainsTotalSupply(uint96 amount) public {
+       uint256 supplyBefore = vault.totalSupply();
+       
+       vm.prank(user1);
+       vault.deposit{value: amount}();
+       
+       assertEq(vault.totalSupply(), supplyBefore + amount);
+   }
+   ```
+
+5. **Create invariant tests for critical properties**
+   
+   ```solidity
+   // In separate file: ContractUnderTest.invariants.t.sol
+   
+   contract Handler is Test {
+       ContractUnderTest public target;
+       
+       constructor(ContractUnderTest _target) {
+           target = _target;
+       }
+       
+       function deposit(uint256 amount) public {
+           amount = bound(amount, 0, 100 ether);
+           deal(msg.sender, amount);
+           target.deposit{value: amount}();
+       }
+       
+       function withdraw(uint256 amount) public {
+           amount = bound(amount, 0, target.balanceOf(msg.sender));
+           target.withdraw(amount);
+       }
+   }
+
+   contract InvariantTest is Test {
+       ContractUnderTest public target;
+       Handler public handler;
+
+       function setUp() public {
+           target = new ContractUnderTest();
+           handler = new Handler(target);
+           targetContract(address(handler));
+       }
+
+       function invariant_TotalSupplyMatchesBalance() public {
+           assertEq(
+               target.totalSupply(),
+               address(target).balance,
+               "supply != balance"
+           );
+       }
+
+       function invariant_NoNegativeBalances() public {
+           // Verified implicitly by uint256, but test access patterns
+       }
+   }
+   ```
+
+6. **Test access control thoroughly**
+   
+   ```solidity
+   function test_OnlyOwner_RevertsForNonOwner() public {
+       vm.prank(user1);
+       vm.expectRevert(Unauthorized.selector);
+       target.adminFunction();
+   }
+
+   function test_OnlyOwner_SucceedsForOwner() public {
+       vm.prank(owner);
+       target.adminFunction();
+       // Assert expected state change
+   }
+
+   function test_RoleTransfer_UpdatesOwner() public {
+       vm.prank(owner);
+       target.transferOwnership(user1);
+       
+       assertEq(target.owner(), user1);
+       
+       // Verify old owner no longer has access
+       vm.prank(owner);
+       vm.expectRevert(Unauthorized.selector);
+       target.adminFunction();
+   }
+   ```
+
+7. **Test edge cases and boundaries**
+   
+   ```solidity
+   function test_Deposit_ZeroAmount() public {
+       vm.prank(user1);
+       vm.expectRevert(ZeroAmount.selector);
+       target.deposit{value: 0}();
+   }
+
+   function test_Transfer_ToZeroAddress() public {
+       vm.prank(user1);
+       vm.expectRevert(InvalidRecipient.selector);
+       target.transfer(address(0), 100);
+   }
+
+   function test_Withdraw_MaxUint256() public {
+       // Test behavior with max values
+   }
+   ```
+
+8. **Verify state changes, not just non-reversion**
+   
+   ```solidity
+   // BAD: Only checks it doesn't revert
+   function test_Bad_Deposit() public {
+       target.deposit{value: 1 ether}();
+   }
+
+   // GOOD: Verifies actual state change
+   function test_Good_Deposit() public {
+       uint256 balanceBefore = target.balanceOf(user1);
+       
+       vm.prank(user1);
+       target.deposit{value: 1 ether}();
+       
+       assertEq(
+           target.balanceOf(user1), 
+           balanceBefore + 1 ether,
+           "balance not updated"
+       );
+   }
+   ```
+
+9. **Test reentrancy protection**
+   
+   ```solidity
+   contract ReentrancyAttacker {
+       ContractUnderTest target;
+       
+       constructor(ContractUnderTest _target) {
+           target = _target;
+       }
+       
+       receive() external payable {
+           if (address(target).balance >= 1 ether) {
+               target.withdraw(1 ether);
+           }
+       }
+       
+       function attack() external payable {
+           target.deposit{value: msg.value}();
+           target.withdraw(msg.value);
+       }
+   }
+
+   function test_Withdraw_PreventsReentrancy() public {
+       ReentrancyAttacker attacker = new ReentrancyAttacker(target);
+       deal(address(attacker), 2 ether);
+       deal(address(target), 10 ether);
+       
+       vm.expectRevert(ReentrancyGuard.selector);
+       attacker.attack{value: 1 ether}();
+   }
+   ```
+
+10. **Use forge-std utilities effectively**
+    - `deal()` for setting balances
+    - `makeAddr()` for labeled addresses
+    - `vm.prank()` / `vm.startPrank()` for caller impersonation
+    - `vm.expectRevert()` for revert assertions
+    - `vm.expectEmit()` for event verification
+    - `bound()` for fuzzing bounds
+    - `vm.warp()` / `vm.roll()` for time/block manipulation
+
+## Output Format
+
+### Test File Structure
+
+```
+test/
+├── ContractName.t.sol          # Unit tests
+├── ContractName.invariants.t.sol  # Invariant tests
+└── mocks/
+    └── MockDependency.sol      # Test mocks
+```
+
+### Test Naming Convention
+
+- `test_FunctionName_ConditionOrBehavior` for unit tests
+- `testFuzz_FunctionName_Property` for fuzz tests
+- `invariant_PropertyDescription` for invariants
+- `testFork_Scenario` for fork tests
+
+### Coverage Summary
+
+| Function | Unit | Fuzz | Invariant | Edge Cases |
+|----------|------|------|-----------|------------|
+| deposit | ✓ | ✓ | ✓ | ✓ |
+| withdraw | ✓ | ✓ | ✓ | ✓ |
+| transfer | ✓ | ✓ | - | ✓ |
+
+## Critical: Tests Must Assert on Results
+
+**IMPORTANT**: Every test must call contract functions AND assert on the results. Tests that only check for non-reversion are insufficient.
+
+```solidity
+// INSUFFICIENT - only checks non-reversion
+function test_Bad_Deposit() public {
+    target.deposit{value: 1 ether}();
+    // No assertions!
+}
+
+// CORRECT - verifies actual behavior
+function test_Good_Deposit() public {
+    uint256 balanceBefore = target.balanceOf(user1);
+    
+    vm.prank(user1);
+    target.deposit{value: 1 ether}();
+    
+    // Assert on state changes
+    assertEq(target.balanceOf(user1), balanceBefore + 1 ether);
+    assertEq(address(target).balance, 1 ether);
+}
+
+// CORRECT - verifies return value
+function test_Good_Deposit_ReturnsShares() public {
+    vm.prank(user1);
+    uint256 shares = target.deposit{value: 1 ether}();
+    
+    assertEq(shares, 1 ether); // Assert on return value
+}
+```
+
+## Interactive Decisions
+
+Ask the user to clarify:
+- **Test scope**: All functions or specific critical paths?
+- **Fuzz runs**: Default 256 or increase for critical functions?
+- **Fork testing**: Test against mainnet state for integrations?
+- **Mock strategy**: Mock external dependencies or use actual contracts?
+- **Coverage target**: What percentage coverage is acceptable?
+- **Invariant depth**: How many calls per invariant run?

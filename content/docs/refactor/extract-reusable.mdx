@@ -1,0 +1,140 @@
+---
+title: "Extract Reusable Components"
+description: "Identify duplicated or similar code patterns and extract them into reusable functions, components, hooks, or utilities."
+---
+
+# Extract Reusable Components
+
+Identify duplicated or similar code patterns and extract them into reusable functions, components, hooks, or utilities.
+
+---
+
+## Context
+
+Before analyzing, gather:
+1. The target codebase or specific directories to analyze
+2. Existing utility libraries, shared components, or helper modules
+3. Framework and language conventions for reusable code
+4. Project structure and where shared code typically lives
+5. Import/export patterns used in the codebase
+
+## Instructions
+
+1. **Identify Duplication Patterns**
+   - Exact code duplicates across files
+   - Similar logic with minor variations (parameterizable)
+   - Repeated data transformations
+   - Common UI patterns (for frontend)
+   - Shared business logic
+
+2. **Categorize Extraction Candidates**
+   - **Utility Functions:** Pure functions, data manipulation, formatting
+   - **Components:** Reusable UI elements (React, Vue, etc.)
+   - **Hooks/Composables:** Stateful logic reuse (React hooks, Vue composables)
+   - **Services:** API calls, external integrations
+   - **Constants/Config:** Shared values, configuration objects
+   - **Types/Interfaces:** Common type definitions
+
+3. **Evaluate Abstraction Level**
+   For each candidate, assess:
+   - Is the pattern stable or likely to diverge?
+   - How many call sites would benefit?
+   - What's the right level of configurability?
+   - Should it be generic or domain-specific?
+
+4. **Design the Extraction**
+   - Define clear interfaces/parameters
+   - Consider edge cases from all call sites
+   - Plan for extensibility without over-engineering
+   - Determine appropriate location in project structure
+
+5. **Analyze Call Site Changes**
+   - Map all locations that would use the extraction
+   - Identify any call sites that need special handling
+   - Consider backward compatibility if applicable
+
+## Output Format
+
+For each extraction candidate:
+
+```markdown
+### [Extraction Name]
+**Type:** Utility/Component/Hook/Service/Constant/Type
+**Duplication Found:** X occurrences across Y files
+**Confidence:** High/Medium/Low
+
+**Current Occurrences:**
+- `file1:line` - [brief context]
+- `file2:line` - [brief context]
+- ...
+
+**Proposed Extraction:**
+```text
+// Location: src/utils/[name].ts (or appropriate path)
+[extracted code with proper interface]
+```
+
+**Call Site Changes:**
+
+Before (`file1:line`):
+```text
+[original inline code]
+```
+
+After:
+```text
+[code using extracted utility]
+```
+
+**Tradeoffs:**
+
+| Pros | Cons |
+|------|------|
+| [benefit] | [drawback] |
+| ... | ... |
+
+**Considerations:**
+- [Any special handling needed]
+- [Edge cases to watch]
+- [Testing implications]
+```
+
+### Extraction Summary
+
+| Name | Type | Occurrences | Lines Saved | Confidence | Risk |
+|------|------|-------------|-------------|------------|------|
+| ... | ... | ... | ... | ... | ... |
+
+## Interactive Decisions
+
+Pause and ask the user at these decision points:
+
+1. **Minimum Threshold**
+   - "What's the minimum number of occurrences to consider extraction? (default: 2)"
+
+2. **Scope of Search**
+   - "Should I search the entire codebase or specific directories?"
+
+3. **Abstraction Level**
+   - "Pattern X appears in Y places but with variations. Should I:
+     a) Extract with parameters to handle all cases
+     b) Extract only the common core
+     c) Keep separate (variations are intentional)"
+
+4. **Location Decision**
+   - "Where should [extraction] live?
+     a) `src/utils/` (general utility)
+     b) `src/components/shared/` (shared component)
+     c) `src/hooks/` (custom hook)
+     d) Near primary usage in `[path]`
+     e) Other location"
+
+5. **Breaking Change Review**
+   - "Extracting this would change X call sites. Review each change before proceeding?"
+
+6. **Implementation Order**
+   - "Found X extraction candidates. Implement in order of:
+     a) Most occurrences first
+     b) Lowest risk first
+     c) Your specified order
+     d) Let me choose which to implement"

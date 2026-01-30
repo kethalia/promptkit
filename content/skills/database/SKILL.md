@@ -1,0 +1,132 @@
+---
+name: database
+description: Database workflows for full-stack development. Use when designing schemas, writing migrations, optimizing queries, or working with ORMs. Triggers include "database", "SQL", "schema", "migration", "Prisma", "SQLAlchemy", "GORM", "query optimization", "PostgreSQL", "MySQL", or when working with data models. Covers schema design, migrations, SQL patterns, query optimization, and ORM best practices.
+---
+
+# Database Skill
+
+Comprehensive database workflows for full-stack development. This skill covers:
+1. **Schema Design** - Tables, relationships, normalization
+2. **Migrations** - Version-controlled schema changes
+3. **SQL Patterns** - Queries, joins, aggregations
+4. **Query Optimization** - Indexes, EXPLAIN, performance
+5. **ORMs** - Prisma, SQLAlchemy, GORM, Drizzle patterns
+
+## Quick Reference
+
+| Scenario | Reference |
+|----------|-----------|
+| Design schema | See [schema-design.md](references/schema-design.md) |
+| Write migrations | See [migrations.md](references/migrations.md) |
+| SQL queries | See [sql-patterns.md](references/sql-patterns.md) |
+| Optimize performance | See [query-optimization.md](references/query-optimization.md) |
+| ORM patterns | See [orm-patterns.md](references/orm-patterns.md) |
+
+## Database Selection
+
+| Database | Best For |
+|----------|----------|
+| **PostgreSQL** | General purpose, complex queries, JSON, full-text search |
+| **MySQL** | Web apps, read-heavy workloads, replication |
+| **SQLite** | Embedded, local development, small apps |
+| **MongoDB** | Document storage, flexible schemas |
+| **Redis** | Caching, sessions, real-time data |
+
+## Schema Design Quick Reference
+
+### Relationships
+
+```sql
+-- One-to-Many: User has many Posts
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE posts (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL
+);
+
+-- Many-to-Many: Posts have many Tags
+CREATE TABLE tags (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE post_tags (
+  post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+  tag_id INTEGER REFERENCES tags(id) ON DELETE CASCADE,
+  PRIMARY KEY (post_id, tag_id)
+);
+```
+
+### Essential Columns
+
+```sql
+CREATE TABLE example (
+  id SERIAL PRIMARY KEY,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  deleted_at TIMESTAMPTZ NULL  -- Soft delete
+);
+```
+
+## Index Guidelines
+
+```sql
+-- Index foreign keys
+CREATE INDEX idx_posts_user_id ON posts(user_id);
+
+-- Index columns in WHERE clauses
+CREATE INDEX idx_posts_status ON posts(status);
+
+-- Composite index (column order matters!)
+CREATE INDEX idx_posts_user_status ON posts(user_id, status);
+
+-- Partial index
+CREATE INDEX idx_active_users ON users(email) WHERE deleted_at IS NULL;
+```
+
+## Migration Commands
+
+| Tool | Create | Run | Rollback |
+|------|--------|-----|----------|
+| Prisma | `prisma migrate dev` | `prisma migrate deploy` | `prisma migrate reset` |
+| Alembic | `alembic revision` | `alembic upgrade head` | `alembic downgrade -1` |
+| golang-migrate | `migrate create` | `migrate up` | `migrate down 1` |
+| Knex | `knex migrate:make` | `knex migrate:latest` | `knex migrate:rollback` |
+
+## ORM Quick Reference
+
+| Operation | Prisma | SQLAlchemy | GORM |
+|-----------|--------|------------|------|
+| Create | `create()` | `session.add()` | `db.Create()` |
+| Find one | `findUnique()` | `session.get()` | `db.First()` |
+| Find many | `findMany()` | `session.scalars()` | `db.Find()` |
+| Update | `update()` | `commit()` | `db.Updates()` |
+| Delete | `delete()` | `session.delete()` | `db.Delete()` |
+| Include relations | `include: {}` | `selectinload()` | `Preload()` |
+
+## Output Format
+
+When designing database schemas:
+
+```markdown
+## Schema Design: [Feature]
+
+### Tables
+- `table_name` - Purpose
+
+### Relationships
+- table1 → table2 (one-to-many)
+
+### Indexes
+- `idx_name` on column(s)
+
+### Migration
+```sql
+[SQL or ORM migration code]
+```
+```

@@ -1,0 +1,8 @@
+{
+  "title": "Security",
+  "pages": [
+    "security-audit",
+    "check-vulnerabilities",
+    "dependency-audit"
+  ]
+}

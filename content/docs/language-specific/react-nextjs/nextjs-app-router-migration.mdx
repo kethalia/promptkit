@@ -1,0 +1,190 @@
+---
+title: "Next.js App Router Migration"
+description: "Migrate from Pages Router to App Router with server components and new data fetching patterns."
+---
+
+# Next.js App Router Migration
+
+Migrate from Pages Router to App Router with server components and new data fetching patterns.
+
+---
+
+## Context
+
+Before migrating, gather:
+- Current pages/ directory structure
+- All getServerSideProps/getStaticProps/getInitialProps usage
+- API routes in pages/api
+- Custom _app.tsx and _document.tsx configurations
+- next/head and next/router usage
+- Current Next.js version (must be 13.4+ for stable App Router)
+- Third-party packages that may have App Router compatibility issues
+
+## Instructions
+
+1. **Analyze pages/ Directory Structure**
+   - List all pages in pages/ directory
+   - Document dynamic routes ([id], [...slug], [[...optional]])
+   - Identify nested route patterns
+   - Map current URL structure
+   - Note middleware usage
+   - List pages with heavy client interactivity
+
+2. **Map Pages to app/ Router Conventions**
+   - pages/index.tsx → app/page.tsx
+   - pages/about.tsx → app/about/page.tsx
+   - pages/blog/[slug].tsx → app/blog/[slug]/page.tsx
+   - pages/[...slug].tsx → app/[...slug]/page.tsx
+   - Identify shared layouts across routes
+   - Plan loading.tsx and error.tsx placement
+
+3. **Convert getServerSideProps/getStaticProps to New Patterns**
+   - **getServerSideProps** → async Server Component with `cache: 'no-store'`
+   - **getStaticProps** → async Server Component (cached by default)
+   - **getStaticPaths** → generateStaticParams function
+   - **getInitialProps** → Server Component or client fetch
+   - **ISR (revalidate)** → `next: { revalidate: N }` option
+   - Document which pages can be full Server Components
+
+4. **Handle Layout Migrations**
+   - Convert _app.tsx to app/layout.tsx (root layout)
+   - Convert _document.tsx elements to root layout
+   - Identify page-specific layouts for nested layout.tsx
+   - Move global styles and providers to root layout
+   - Handle metadata that was in _app.tsx
+
+5. **Convert API Routes**
+   - Map pages/api/[route].ts → app/api/[route]/route.ts
+   - Convert handler to named exports (GET, POST, PUT, DELETE)
+   - Update request handling:
+     - `req.query` → `request.nextUrl.searchParams`
+     - `req.body` → `await request.json()`
+     - `res.json()` → `NextResponse.json()`
+   - Handle dynamic segments in route handlers
+
+6. **Update Data Fetching Patterns**
+   - Replace fetch wrappers with native fetch + caching options
+   - Configure request deduplication (same URL auto-deduped)
+   - Set caching strategies per fetch:
+     - `cache: 'force-cache'` (default, static)
+     - `cache: 'no-store'` (dynamic)
+     - `next: { revalidate: N }` (ISR)
+   - Handle parallel data fetching with Promise.all
+   - Implement streaming with Suspense boundaries
+
+7. **Create Step-by-Step Migration Plan**
+   - Both routers can coexist during migration
+   - Start with static/simple pages
+   - Move shared layouts to app/ first
+   - Migrate page by page, testing each
+   - Keep complex interactive pages for last
+   - Update imports (next/navigation vs next/router)
+   - Plan rollback strategy for each phase
+
+## Output Format
+
+```markdown
+## Migration Plan: [Project Name]
+
+### Pre-Migration Checklist
+- [ ] Next.js version >= 13.4
+- [ ] Review breaking changes in target version
+- [ ] Audit third-party package compatibility
+- [ ] Set up app/ directory alongside pages/
+- [ ] Configure next.config.js if needed
+
+### Pages Inventory
+| Current Path | New Path | Data Fetching | Complexity |
+|--------------|----------|---------------|------------|
+| pages/index.tsx | app/page.tsx | getStaticProps | Low |
+| pages/blog/[slug].tsx | app/blog/[slug]/page.tsx | getServerSideProps | Medium |
+| pages/dashboard.tsx | app/dashboard/page.tsx | Client-side | High |
+
+### Layout Structure
+```
+app/
+├── layout.tsx (from _app.tsx + _document.tsx)
+├── page.tsx
+├── loading.tsx
+├── error.tsx
+├── blog/
+│   ├── layout.tsx (blog-specific)
+│   ├── page.tsx
+│   └── [slug]/
+│       └── page.tsx
+└── api/
+    └── [routes]/
+        └── route.ts
+```
+
+### Data Fetching Migration
+#### [PageName]
+**Before (pages/)**:
+```tsx
+export async function getServerSideProps() {
+  const data = await fetchData();
+  return { props: { data } };
+}
+```
+
+**After (app/)**:
+```tsx
+async function Page() {
+  const data = await fetch(URL, { cache: 'no-store' });
+  return <Component data={data} />;
+}
+```
+
+### API Routes Migration
+| Old Path | New Path | Methods |
+|----------|----------|---------|
+| pages/api/users.ts | app/api/users/route.ts | GET, POST |
+| pages/api/users/[id].ts | app/api/users/[id]/route.ts | GET, PUT, DELETE |
+
+### Client/Server Component Boundaries
+#### Server Components (default)
+- [List components that stay server-only]
+
+#### Client Components (need 'use client')
+- [Component]: Uses useState/useEffect
+- [Component]: Uses onClick/event handlers
+
+### Migration Phases
+**Phase 1: Foundation**
+- [ ] Create app/layout.tsx from _app.tsx
+- [ ] Move global providers to root layout
+- [ ] Set up error.tsx and loading.tsx
+
+**Phase 2: Static Pages**
+- [ ] Migrate [list of static pages]
+
+**Phase 3: Dynamic Pages**
+- [ ] Migrate [pages with data fetching]
+
+**Phase 4: API Routes**
+- [ ] Convert [api routes]
+
+**Phase 5: Complex Pages**
+- [ ] Migrate [interactive pages with 'use client']
+
+**Phase 6: Cleanup**
+- [ ] Remove pages/ directory
+- [ ] Update next/router → next/navigation
+- [ ] Remove deprecated patterns
+
+### Known Issues & Workarounds
+| Issue | Workaround |
+|-------|------------|
+| [Package X not compatible] | [Solution] |
+| [Pattern Y not supported] | [Alternative] |
+```
+
+## Interactive Decisions
+
+Ask the user before proceeding when:
+- Migration scope needs to be defined (full vs incremental)
+- Data fetching strategy unclear (server vs client component)
+- Component boundaries need design decisions
+- API route changes affect external consumers
+- Third-party packages need alternatives
+- Caching strategy needs business input (static, dynamic, ISR duration)

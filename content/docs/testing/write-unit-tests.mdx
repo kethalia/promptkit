@@ -1,0 +1,85 @@
+---
+title: "Write Unit Tests"
+description: "Generate meaningful unit tests that verify actual behavior, not just code structure."
+---
+
+# Write Unit Tests
+
+Generate meaningful unit tests that verify actual behavior, not just code structure.
+
+---
+
+## Context
+
+Before writing tests, gather:
+- The code file(s) to test
+- Existing test files in the project to match conventions
+- Test framework in use (detect from package.json, imports, or existing tests)
+- Project structure for test file placement
+
+## Instructions
+
+1. **Analyze the code under test**
+   - Read the implementation thoroughly
+   - Identify what each function/method actually DOES (not just its signature)
+   - Map out code paths: conditionals, loops, early returns
+   - Note external dependencies vs internal logic
+
+2. **Identify core behaviors to test**
+   - What is the function supposed to return for given inputs?
+   - What state changes occur?
+   - What side effects should happen?
+   - What errors should be thrown and when?
+
+3. **Design test cases that execute real code**
+   - Happy path: typical inputs producing expected outputs
+   - Edge cases: empty inputs, boundary values, null/undefined
+   - Error cases: invalid inputs, failure conditions
+   - For each case, define the SPECIFIC expected outcome
+
+4. **Write tests with meaningful assertions**
+   - Execute the actual code under test
+   - Assert on concrete return values, not just types
+   - Verify state changes actually occurred
+   - Check error messages, not just that errors were thrown
+
+5. **Apply mocking correctly**
+   - Mock ONLY external dependencies: databases, APIs, filesystem, network
+   - NEVER mock the code you're testing
+   - NEVER mock internal helper functions unless they hit external systems
+   - Prefer dependency injection over module mocking when possible
+
+6. **Verify test quality**
+   - For each test, ask: "Would this fail if the implementation was wrong?"
+   - If a test would pass with an empty function body, it's not meaningful
+   - Ensure assertions are specific enough to catch regressions
+
+## Output Format
+
+```markdown
+## Test Analysis
+
+**Code Under Test:** [file path]
+**Test Framework:** [detected framework]
+**Test File Location:** [where tests will go]
+
+### Behaviors to Test
+1. [Behavior]: [Expected outcome]
+2. [Behavior]: [Expected outcome]
+...
+
+### External Dependencies to Mock
+- [Dependency]: [Why it needs mocking]
+
+## Generated Tests
+
+[Complete test file with meaningful test cases]
+```
+
+## Interactive Decisions
+
+Ask the user when:
+- Multiple test frameworks are present in the project
+- Unclear whether a dependency should be mocked or used directly
+- Test file location is ambiguous
+- The code has no clear expected behavior (may indicate code needs refactoring)

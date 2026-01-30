@@ -1,0 +1,180 @@
+---
+name: documentation
+description: Documentation workflows for AI coding assistants. Use when generating README files, API documentation, code comments, architecture docs, or user guides. Triggers include "write docs", "document this", "README", "API docs", "JSDoc", "docstring", "architecture documentation", or when code needs documentation. Covers README generation, API docs, code comments, and technical writing.
+---
+
+# Documentation Skill
+
+Specialized workflows for creating and improving documentation. This skill covers:
+1. **README Generation** - Project README files
+2. **API Documentation** - Function, class, and module docs
+3. **Code Comments** - Inline and block comments
+4. **Technical Writing** - Architecture and design docs
+
+## Quick Reference
+
+| Scenario | Trigger | Reference |
+|----------|---------|-----------|
+| README | "write README", "document project" | See [readme-generation.md](references/readme-generation.md) |
+| API Docs | "API docs", "JSDoc", "docstring" | See [api-documentation.md](references/api-documentation.md) |
+| Code Comments | "add comments", "document code" | See [code-comments.md](references/code-comments.md) |
+| Technical Docs | "architecture docs", "design doc" | See [technical-writing.md](references/technical-writing.md) |
+
+## Documentation Principles
+
+### Good Documentation Is
+
+- **Accurate** - Reflects current state of code
+- **Complete** - Covers all public APIs and use cases
+- **Concise** - No unnecessary verbosity
+- **Up-to-date** - Maintained with code changes
+- **Accessible** - Appropriate for target audience
+
+### Documentation Levels
+
+```
+Project Level
+├── README.md           # Project overview
+├── CONTRIBUTING.md     # How to contribute
+├── CHANGELOG.md        # Version history
+└── docs/
+    ├── getting-started.md
+    ├── api/            # API reference
+    └── guides/         # How-to guides
+
+Code Level
+├── Module docstrings   # Module purpose
+├── Class docstrings    # Class responsibility
+├── Function docstrings # Function behavior
+└── Inline comments     # Complex logic
+```
+
+## Quick Templates
+
+### Function Documentation
+
+```javascript
+/**
+ * Calculates the total price including tax and discounts.
+ *
+ * @param {number} subtotal - The pre-tax subtotal
+ * @param {number} taxRate - Tax rate as decimal (e.g., 0.08 for 8%)
+ * @param {number} [discount=0] - Optional discount amount
+ * @returns {number} The final total
+ * @throws {Error} If subtotal or taxRate is negative
+ *
+ * @example
+ * const total = calculateTotal(100, 0.08, 10);
+ * // Returns 98 (100 * 1.08 - 10)
+ */
+function calculateTotal(subtotal, taxRate, discount = 0) {
+```
+
+```python
+def calculate_total(subtotal: float, tax_rate: float, discount: float = 0) -> float:
+    """Calculate the total price including tax and discounts.
+
+    Args:
+        subtotal: The pre-tax subtotal.
+        tax_rate: Tax rate as decimal (e.g., 0.08 for 8%).
+        discount: Optional discount amount. Defaults to 0.
+
+    Returns:
+        The final total after tax and discount.
+
+    Raises:
+        ValueError: If subtotal or tax_rate is negative.
+
+    Example:
+        >>> calculate_total(100, 0.08, 10)
+        98.0
+    """
+```
+
+### README Section
+
+```markdown
+## Installation
+
+```bash
+npm install my-package
+```
+
+## Quick Start
+
+```javascript
+import { MyPackage } from 'my-package';
+
+const instance = new MyPackage();
+instance.doSomething();
+```
+
+## API Reference
+
+### `doSomething(options)`
+
+Does something useful.
+
+**Parameters:**
+- `options` (Object): Configuration options
+  - `option1` (string): First option
+  - `option2` (number): Second option (default: `10`)
+
+**Returns:** `Promise<Result>`
+```
+
+## Documentation Checklist
+
+### For Functions/Methods
+- [ ] Purpose described clearly
+- [ ] Parameters documented with types
+- [ ] Return value documented
+- [ ] Exceptions/errors documented
+- [ ] Example provided
+- [ ] Edge cases mentioned
+
+### For Classes/Modules
+- [ ] Overall purpose explained
+- [ ] Usage example provided
+- [ ] Public API documented
+- [ ] Dependencies mentioned
+- [ ] Configuration options listed
+
+### For Projects
+- [ ] README with overview
+- [ ] Installation instructions
+- [ ] Quick start guide
+- [ ] API reference
+- [ ] Contributing guidelines
+- [ ] License information
+
+## Documentation Tools
+
+| Language | Tool | Format |
+|----------|------|--------|
+| JavaScript | JSDoc | `/** */` |
+| TypeScript | TSDoc | `/** */` |
+| Python | Sphinx/Google | `"""` docstrings |
+| Go | GoDoc | `//` comments |
+| Rust | RustDoc | `///` comments |
+| Java | Javadoc | `/** */` |
+
+## Output Format
+
+When generating documentation:
+
+```markdown
+## Documentation Generated
+
+### Files Created/Updated
+- `README.md` - Project overview
+- `docs/api.md` - API reference
+
+### Coverage
+- Functions documented: X/Y
+- Classes documented: X/Y
+- Examples added: X
+
+### Sample Output
+[Show excerpt of generated documentation]
+```

@@ -1,0 +1,10 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "generate-readme",
+    "document-function",
+    "generate-api-docs",
+    "review-documentation-consistency",
+    "review-documentation-sync"
+  ]
+}

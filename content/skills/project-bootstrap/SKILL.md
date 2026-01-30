@@ -1,0 +1,251 @@
+---
+name: project-bootstrap
+description: Project bootstrapping workflows for AI coding assistants. Use when creating new projects, setting up development environments, or initializing repositories. Triggers include "create project", "bootstrap", "init project", "new app", "setup project", "scaffold", or when starting any new codebase. Covers project scaffolding, tooling setup, and best practices for various stacks.
+---
+
+# Project Bootstrap Skill
+
+Workflows for creating new projects with proper structure and tooling. This skill covers:
+1. **JavaScript/TypeScript** - Node.js, React, Next.js projects
+2. **Python** - Python packages and applications
+3. **Go** - Go modules and applications
+4. **Rust** - Cargo projects
+
+## Quick Reference
+
+| Stack | Trigger | Reference |
+|-------|---------|-----------|
+| JavaScript/TS | "create Node project", "React app" | See [javascript-typescript.md](references/javascript-typescript.md) |
+| Python | "create Python project", "Python package" | See [python.md](references/python.md) |
+| Go | "create Go project", "Go module" | See [go.md](references/go.md) |
+| Rust | "create Rust project", "Cargo new" | See [rust.md](references/rust.md) |
+
+## Bootstrap Process
+
+### 1. Gather Requirements
+
+```
+Project Requirements:
+├── Name and description
+├── Language/framework
+├── Type (library, CLI, web app, API)
+├── Features needed
+│   ├── Testing
+│   ├── Linting
+│   ├── CI/CD
+│   └── Docker
+└── Target platform
+```
+
+### 2. Create Structure
+
+```
+Standard Project Structure:
+├── README.md           # Project documentation
+├── LICENSE             # License file
+├── .gitignore          # Git ignore patterns
+├── .editorconfig       # Editor settings
+├── src/                # Source code
+├── tests/              # Test files
+├── docs/               # Documentation
+└── [config files]      # Language-specific config
+```
+
+### 3. Configure Tooling
+
+- Package manager
+- Build tools
+- Linter and formatter
+- Testing framework
+- CI/CD pipeline
+
+### 4. Initialize Git
+
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+```
+
+## Universal Files
+
+### .gitignore Template
+
+```gitignore
+# Dependencies
+node_modules/
+vendor/
+.venv/
+target/
+
+# Build outputs
+dist/
+build/
+*.o
+*.pyc
+__pycache__/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Testing
+coverage/
+.coverage
+htmlcov/
+```
+
+### .editorconfig
+
+```ini
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{py,rs,go}]
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+```
+
+### LICENSE (MIT)
+
+```
+MIT License
+
+Copyright (c) [year] [name]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## Quick Start Commands
+
+### JavaScript/TypeScript
+
+```bash
+# Node.js with TypeScript
+npm init -y
+npm install -D typescript @types/node ts-node
+npx tsc --init
+
+# React (Vite)
+npm create vite@latest my-app -- --template react-ts
+
+# Next.js
+npx create-next-app@latest my-app --typescript --tailwind --eslint
+
+# Express API
+npm init -y
+npm install express
+npm install -D typescript @types/express @types/node ts-node-dev
+```
+
+### Python
+
+```bash
+# Basic project with uv
+uv init my-project
+cd my-project
+uv venv
+source .venv/bin/activate
+
+# With Poetry
+poetry new my-project
+cd my-project
+poetry install
+
+# FastAPI project
+uv init my-api
+uv add fastapi uvicorn
+```
+
+### Go
+
+```bash
+# Initialize module
+go mod init github.com/username/project
+
+# With common dependencies
+go get github.com/gin-gonic/gin  # Web framework
+go get github.com/spf13/cobra    # CLI framework
+```
+
+### Rust
+
+```bash
+# Binary project
+cargo new my-project
+
+# Library project
+cargo new my-lib --lib
+
+# With workspace
+mkdir my-workspace && cd my-workspace
+# Create Cargo.toml with [workspace] section
+```
+
+## Output Format
+
+When bootstrapping a project:
+
+```markdown
+## Project Created: [project-name]
+
+### Structure
+```
+project-name/
+├── [files created]
+```
+
+### Commands to Get Started
+```bash
+cd project-name
+[install command]
+[run command]
+```
+
+### Next Steps
+1. [Recommended next action]
+2. [Additional setup if needed]
+```

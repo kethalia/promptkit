@@ -1,0 +1,8 @@
+{
+  "title": "Architecture",
+  "pages": [
+    "design-review",
+    "suggest-patterns",
+    "evaluate-tradeoffs"
+  ]
+}
