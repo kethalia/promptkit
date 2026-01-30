@@ -1,0 +1,9 @@
+{
+  "title": "References",
+  "pages": [
+    "branching-strategies",
+    "commit-conventions",
+    "merge-conflicts",
+    "pull-requests"
+  ]
+}

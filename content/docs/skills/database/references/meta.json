@@ -1,0 +1,10 @@
+{
+  "title": "References",
+  "pages": [
+    "migrations",
+    "orm-patterns",
+    "query-optimization",
+    "schema-design",
+    "sql-patterns"
+  ]
+}

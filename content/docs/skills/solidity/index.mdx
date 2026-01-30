@@ -1,0 +1,237 @@
+---
+title: "Solidity Skill"
+name: solidity
+description: Solidity smart contract development workflows for AI coding assistants. Use when auditing smart contracts, optimizing gas, upgrading Solidity versions, or writing tests with Foundry/Hardhat. Triggers include "smart contract", "Solidity", "audit contract", "gas optimization", "Foundry", "Hardhat", "EVM", or when working with .sol files. Covers security audits, gas optimization, version upgrades, and testing.
+---
+# Solidity Skill
+
+Specialized workflows for Solidity smart contract development. This skill covers:
+1. **Smart Contract Audit** - Security review for contracts
+2. **Gas Optimization** - Reduce gas costs
+3. **Upgrade Solidity Version** - Migrate to newer Solidity
+4. **Test Coverage** - Foundry and Hardhat testing
+
+## Quick Reference
+
+| Scenario | Trigger | Reference |
+|----------|---------|-----------|
+| Security Audit | "audit contract", "security review" | See [smart-contract-audit.md](references/smart-contract-audit.md) |
+| Gas Optimization | "optimize gas", "reduce gas" | See [gas-optimization.md](references/gas-optimization.md) |
+| Version Upgrade | "upgrade Solidity", "migrate contract" | See [upgrade-solidity.md](references/upgrade-solidity.md) |
+| Testing | "Foundry tests", "Hardhat tests" | See [test-coverage.md](references/test-coverage.md) |
+
+## Solidity Fundamentals
+
+### Contract Structure
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+/// @title Example Contract
+/// @author Developer
+/// @notice Brief description
+/// @dev Implementation details
+contract Example {
+    // Type declarations
+    struct User {
+        address addr;
+        uint256 balance;
+    }
+    
+    // State variables
+    address public owner;
+    mapping(address => User) public users;
+    
+    // Events
+    event UserRegistered(address indexed user, uint256 balance);
+    
+    // Errors (custom errors save gas)
+    error Unauthorized();
+    error InvalidAmount(uint256 amount);
+    
+    // Modifiers
+    modifier onlyOwner() {
+        if (msg.sender != owner) revert Unauthorized();
+        _;
+    }
+    
+    // Constructor
+    constructor() {
+        owner = msg.sender;
+    }
+    
+    // External functions
+    // Public functions
+    // Internal functions
+    // Private functions
+    // View/Pure functions
+}
+```
+
+### Visibility & Mutability
+
+| Visibility | Access |
+|------------|--------|
+| `public` | Anyone, auto-getter |
+| `external` | Only external calls |
+| `internal` | Contract + derived |
+| `private` | Only this contract |
+
+| Mutability | State Access |
+|------------|--------------|
+| (default) | Read + Write |
+| `view` | Read only |
+| `pure` | No state access |
+| `payable` | Can receive ETH |
+
+### Common Patterns
+
+```solidity
+// Checks-Effects-Interactions
+function withdraw(uint256 amount) external {
+    // Checks
+    if (balances[msg.sender] < amount) revert InsufficientBalance();
+    
+    // Effects
+    balances[msg.sender] -= amount;
+    
+    // Interactions
+    (bool success, ) = msg.sender.call{value: amount}("");
+    require(success, "Transfer failed");
+}
+
+// Pull over Push
+mapping(address => uint256) public pendingWithdrawals;
+
+function withdraw() external {
+    uint256 amount = pendingWithdrawals[msg.sender];
+    pendingWithdrawals[msg.sender] = 0;
+    payable(msg.sender).transfer(amount);
+}
+
+// Access Control
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+```
+
+## Security Checklist (Quick)
+
+### Critical
+
+- [ ] Reentrancy protection
+- [ ] Integer overflow (Solidity 0.8+ has built-in)
+- [ ] Access control on sensitive functions
+- [ ] Proper use of `call` vs `transfer`
+
+### High
+
+- [ ] Front-running protection
+- [ ] Oracle manipulation
+- [ ] Flash loan attacks
+- [ ] Signature replay
+
+### Medium
+
+- [ ] Centralization risks
+- [ ] Denial of service vectors
+- [ ] Timestamp dependence
+- [ ] Gas griefing
+
+## Gas Optimization Quick Wins
+
+| Optimization | Savings |
+|--------------|---------|
+| `calldata` vs `memory` | ~60 gas/param |
+| Custom errors vs strings | ~50 gas |
+| `++i` vs `i++` | ~5 gas |
+| Cache array length | ~3 gas/iteration |
+| Pack structs | Up to 20,000 gas |
+| Use `unchecked` when safe | ~40 gas |
+
+## Development Tools
+
+### Foundry
+
+```bash
+# Create project
+forge init my-project
+
+# Build
+forge build
+
+# Test
+forge test -vvv
+
+# Deploy
+forge create --rpc-url $RPC_URL \
+  --private-key $PRIVATE_KEY \
+  src/Contract.sol:Contract
+
+# Verify
+forge verify-contract \
+  --chain-id 1 \
+  --compiler-version v0.8.20 \
+  $CONTRACT_ADDRESS \
+  src/Contract.sol:Contract
+```
+
+### Hardhat
+
+```bash
+# Create project
+npx hardhat init
+
+# Compile
+npx hardhat compile
+
+# Test
+npx hardhat test
+
+# Deploy
+npx hardhat run scripts/deploy.js --network mainnet
+
+# Verify
+npx hardhat verify --network mainnet $CONTRACT_ADDRESS
+```
+
+## Output Format
+
+When reviewing Solidity code:
+
+```markdown
+## Smart Contract Review: [ContractName]
+
+### Summary
+- **Risk Level:** Critical/High/Medium/Low
+- **Solidity Version:** 0.8.x
+- **Lines of Code:** XXX
+
+### Security Findings
+
+#### 🔴 Critical
+- [Finding with location and impact]
+
+#### 🟠 High
+- [Finding with location and impact]
+
+#### 🟡 Medium
+- [Finding with location and impact]
+
+### Gas Optimizations
+1. [Optimization opportunity]
+2. [Optimization opportunity]
+
+### Recommendations
+1. [Specific fix]
+2. [Specific fix]
+```
+
+## Resources
+
+- [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts)
+- [Solidity Docs](https://docs.soliditylang.org)
+- [SWC Registry](https://swcregistry.io/) - Smart Contract Weakness Classification
+- [Foundry Book](https://book.getfoundry.sh)

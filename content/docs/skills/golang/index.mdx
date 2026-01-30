@@ -1,0 +1,266 @@
+---
+title: "Golang Skill"
+name: golang
+description: Go development workflows for AI coding assistants. Use when reviewing Go code, optimizing performance, managing concurrency, or following Go best practices. Triggers include "Go", "Golang", "review Go code", "goroutines", "channels", "Go performance", "Go idioms", or when working with .go files. Covers code review, concurrency patterns, performance optimization, and idiomatic Go.
+---
+# Go Skill
+
+Specialized workflows for Go development. This skill covers:
+1. **Code Review** - Go-specific code review
+2. **Concurrency Patterns** - Goroutines and channels
+3. **Performance Optimization** - Profiling and optimization
+4. **Idiomatic Go** - Go best practices and patterns
+
+## Quick Reference
+
+| Scenario | Trigger | Reference |
+|----------|---------|-----------|
+| Code Review | "review Go code", Go files | See [code-review.md](references/code-review.md) |
+| Concurrency | "goroutines", "channels", "sync" | See [concurrency-patterns.md](references/concurrency-patterns.md) |
+| Performance | "optimize", "profile", "benchmark" | See [performance-optimization.md](references/performance-optimization.md) |
+| Idioms | "idiomatic", "best practices" | See [idiomatic-go.md](references/idiomatic-go.md) |
+
+## Go Fundamentals
+
+### Project Structure
+
+```
+myproject/
+├── cmd/
+│   └── myapp/
+│       └── main.go        # Application entry point
+├── internal/              # Private packages
+│   ├── config/
+│   └── service/
+├── pkg/                   # Public packages
+│   └── utils/
+├── api/                   # API definitions
+├── web/                   # Web assets
+├── configs/               # Configuration files
+├── scripts/               # Build scripts
+├── go.mod
+├── go.sum
+└── README.md
+```
+
+### Error Handling
+
+```go
+// Always handle errors
+result, err := doSomething()
+if err != nil {
+    return fmt.Errorf("failed to do something: %w", err)
+}
+
+// Custom errors
+var ErrNotFound = errors.New("not found")
+
+type ValidationError struct {
+    Field   string
+    Message string
+}
+
+func (e *ValidationError) Error() string {
+    return fmt.Sprintf("%s: %s", e.Field, e.Message)
+}
+
+// Error wrapping
+if err != nil {
+    return fmt.Errorf("processing %s: %w", name, err)
+}
+
+// Error checking
+if errors.Is(err, ErrNotFound) { }
+var valErr *ValidationError
+if errors.As(err, &valErr) { }
+```
+
+### Common Types
+
+```go
+// Slices
+items := make([]string, 0, 10)  // len=0, cap=10
+items = append(items, "item")
+
+// Maps
+users := make(map[string]*User)
+if user, ok := users[id]; ok {
+    // user exists
+}
+delete(users, id)
+
+// Structs
+type User struct {
+    ID        string    `json:"id"`
+    Name      string    `json:"name"`
+    CreatedAt time.Time `json:"created_at"`
+}
+
+// Interfaces
+type Reader interface {
+    Read(p []byte) (n int, err error)
+}
+```
+
+### Functions & Methods
+
+```go
+// Multiple return values
+func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, errors.New("division by zero")
+    }
+    return a / b, nil
+}
+
+// Named return values
+func parse(s string) (result int, err error) {
+    // result and err are initialized
+    return // naked return
+}
+
+// Variadic functions
+func sum(nums ...int) int {
+    total := 0
+    for _, n := range nums {
+        total += n
+    }
+    return total
+}
+
+// Methods
+func (u *User) FullName() string {
+    return u.FirstName + " " + u.LastName
+}
+```
+
+## Code Quality Checklist
+
+### Must Have
+- [ ] All errors handled
+- [ ] No data races
+- [ ] Resources properly closed (defer)
+- [ ] Context propagation for cancellation
+- [ ] Tests pass, `go vet` clean
+
+### Should Have
+- [ ] Idiomatic naming (mixedCaps, not snake_case)
+- [ ] Small interfaces (1-3 methods)
+- [ ] Errors wrapped with context
+- [ ] Concurrent code uses sync primitives
+- [ ] Benchmarks for hot paths
+
+### Nice to Have
+- [ ] Table-driven tests
+- [ ] Example functions in tests
+- [ ] Documentation comments
+- [ ] go:generate for code generation
+
+## Tools
+
+```bash
+# Format code
+go fmt ./...
+gofmt -s -w .
+
+# Vet for issues
+go vet ./...
+
+# Static analysis
+staticcheck ./...
+golangci-lint run
+
+# Testing
+go test ./...
+go test -race ./...
+go test -cover ./...
+go test -bench=. ./...
+
+# Profiling
+go test -cpuprofile=cpu.prof -bench=.
+go tool pprof cpu.prof
+
+# Build
+go build -o bin/app ./cmd/app
+go build -ldflags="-s -w" ./...  # Smaller binary
+```
+
+## Common Patterns
+
+### Options Pattern
+
+```go
+type Server struct {
+    addr    string
+    timeout time.Duration
+}
+
+type Option func(*Server)
+
+func WithTimeout(d time.Duration) Option {
+    return func(s *Server) {
+        s.timeout = d
+    }
+}
+
+func NewServer(addr string, opts ...Option) *Server {
+    s := &Server{addr: addr, timeout: 30 * time.Second}
+    for _, opt := range opts {
+        opt(s)
+    }
+    return s
+}
+```
+
+### Context Pattern
+
+```go
+func ProcessRequest(ctx context.Context, req *Request) error {
+    // Pass context to all downstream calls
+    result, err := fetchData(ctx, req.ID)
+    if err != nil {
+        return err
+    }
+    
+    // Check for cancellation
+    select {
+    case <-ctx.Done():
+        return ctx.Err()
+    default:
+    }
+    
+    return processResult(ctx, result)
+}
+```
+
+## Output Format
+
+When reviewing Go code:
+
+```markdown
+## Go Code Review: [Package/File]
+
+### Summary
+- **Package:** [name]
+- **Issues Found:** X critical, X major, X minor
+
+### Issues
+
+#### 🔴 Critical
+- [Issue with location]
+
+#### 🟠 Major
+- [Issue with location]
+
+#### 🟡 Minor
+- [Issue with location]
+
+### Recommendations
+```go
+// Before
+[problematic code]
+
+// After
+[improved code]
+```
+```

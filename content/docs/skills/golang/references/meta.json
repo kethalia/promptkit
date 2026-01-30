@@ -1,0 +1,9 @@
+{
+  "title": "References",
+  "pages": [
+    "code-review",
+    "concurrency-patterns",
+    "idiomatic-go",
+    "performance-optimization"
+  ]
+}

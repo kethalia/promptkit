@@ -1,7 +1,27 @@
 {
   "title": "Skills",
   "pages": [
+    "accessibility",
+    "api-design",
+    "caching",
+    "ci-cd",
+    "code-debug",
+    "code-refactor",
     "code-review",
-    "code-testing"
+    "code-security",
+    "code-testing",
+    "css-styling",
+    "database",
+    "docker",
+    "documentation",
+    "git-workflows",
+    "github-project-management",
+    "golang",
+    "project-bootstrap",
+    "python-backend",
+    "react-nextjs",
+    "rust",
+    "solidity",
+    "typescript"
   ]
 }

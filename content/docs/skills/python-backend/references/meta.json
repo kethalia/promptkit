@@ -1,0 +1,9 @@
+{
+  "title": "References",
+  "pages": [
+    "async-patterns",
+    "django-patterns",
+    "fastapi-patterns",
+    "testing-patterns"
+  ]
+}
