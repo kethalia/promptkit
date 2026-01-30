@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const SKILLS_DIR = path.join(process.cwd(), 'content', 'skills')
+const SKILLS_DIR = path.join(process.cwd(), 'content', 'docs', 'skills')
 
 export interface SkillInfo {
   slug: string
@@ -23,9 +23,10 @@ interface SkillFrontmatter {
 }
 
 /**
- * Parse YAML frontmatter and body from a SKILL.md file.
+ * Parse YAML frontmatter and body from an index.mdx file.
  * Expects the format:
  * ---
+ * title: "Skill Title"
  * name: skill-name
  * description: ...
  * ---
@@ -59,8 +60,17 @@ function parseFrontmatter(raw: string): SkillFrontmatter {
 }
 
 /**
- * Collect all skill directory names under content/skills/.
- * A valid skill directory must contain a SKILL.md file.
+ * Strip YAML frontmatter from markdown content.
+ * Returns the body without the --- delimited frontmatter block.
+ */
+function stripFrontmatter(raw: string): string {
+  const match = raw.match(/^---\s*\n[\s\S]*?\n---\s*\n([\s\S]*)$/)
+  return match ? match[1].trim() : raw.trim()
+}
+
+/**
+ * Collect all skill directory names under content/docs/skills/.
+ * A valid skill directory must contain an index.mdx file.
  */
 function collectSkillDirs(): string[] {
   if (!fs.existsSync(SKILLS_DIR)) {
@@ -72,7 +82,7 @@ function collectSkillDirs(): string[] {
   return entries
     .filter((entry) => {
       if (!entry.isDirectory()) return false
-      const skillFile = path.join(SKILLS_DIR, entry.name, 'SKILL.md')
+      const skillFile = path.join(SKILLS_DIR, entry.name, 'index.mdx')
       return fs.existsSync(skillFile)
     })
     .map((entry) => entry.name)
@@ -108,11 +118,11 @@ function collectReferenceFiles(
 
 /**
  * Assemble the full inline content for a skill.
- * Combines the SKILL.md body with all reference files appended at the end.
+ * Combines the index.mdx body with all reference files appended at the end.
  */
 function assembleInlineContent(slug: string): string {
   const skillDir = path.join(SKILLS_DIR, slug)
-  const skillFile = path.join(skillDir, 'SKILL.md')
+  const skillFile = path.join(skillDir, 'index.mdx')
   const raw = fs.readFileSync(skillFile, 'utf-8')
   const { body } = parseFrontmatter(raw)
 
@@ -127,7 +137,7 @@ function assembleInlineContent(slug: string): string {
 
   for (const ref of refFiles) {
     const refName = ref.relativePath.replace(/\.md$/, '')
-    const refContent = fs.readFileSync(ref.filePath, 'utf-8').trim()
+    const refContent = stripFrontmatter(fs.readFileSync(ref.filePath, 'utf-8'))
     sections.push(`---`, '', `## Reference: ${refName}`, '', refContent, '')
   }
 
@@ -155,7 +165,7 @@ export function getAllSkills(): SkillInfo[] {
   const dirs = collectSkillDirs()
 
   return dirs.map((slug) => {
-    const raw = fs.readFileSync(path.join(SKILLS_DIR, slug, 'SKILL.md'), 'utf-8')
+    const raw = fs.readFileSync(path.join(SKILLS_DIR, slug, 'index.mdx'), 'utf-8')
     const fm = parseFrontmatter(raw)
     return buildSkillInfo(slug, fm)
   })
@@ -168,7 +178,7 @@ export function getAllSkillsWithContent(): SkillContent[] {
   const dirs = collectSkillDirs()
 
   return dirs.map((slug) => {
-    const raw = fs.readFileSync(path.join(SKILLS_DIR, slug, 'SKILL.md'), 'utf-8')
+    const raw = fs.readFileSync(path.join(SKILLS_DIR, slug, 'index.mdx'), 'utf-8')
     const fm = parseFrontmatter(raw)
     const content = assembleInlineContent(slug)
     return { ...buildSkillInfo(slug, fm), content }
@@ -180,7 +190,7 @@ export function getAllSkillsWithContent(): SkillContent[] {
  * Returns null if not found.
  */
 export function getSkillBySlug(slug: string): SkillContent | null {
-  const skillFile = path.join(SKILLS_DIR, slug, 'SKILL.md')
+  const skillFile = path.join(SKILLS_DIR, slug, 'index.mdx')
 
   if (!fs.existsSync(skillFile)) {
     return null
@@ -191,32 +201,4 @@ export function getSkillBySlug(slug: string): SkillContent | null {
   const content = assembleInlineContent(slug)
 
   return { ...buildSkillInfo(slug, fm), content }
-}
-
-/**
- * Get the absolute path to a skill directory.
- * Used by download routes to create .skill archives.
- */
-export function getSkillDirPath(slug: string): string | null {
-  const dirPath = path.join(SKILLS_DIR, slug)
-  const skillFile = path.join(dirPath, 'SKILL.md')
-
-  if (!fs.existsSync(skillFile)) {
-    return null
-  }
-
-  return dirPath
-}
-
-/**
- * Get all skill directory paths.
- * Used by the bulk download route.
- */
-export function getAllSkillDirPaths(): { slug: string; dirPath: string }[] {
-  const dirs = collectSkillDirs()
-
-  return dirs.map((slug) => ({
-    slug,
-    dirPath: path.join(SKILLS_DIR, slug),
-  }))
 }

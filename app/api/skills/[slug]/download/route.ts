@@ -1,50 +1,37 @@
-import { NextResponse } from 'next/server'
-import archiver from 'archiver'
-import { PassThrough } from 'node:stream'
+import fs from 'node:fs'
+import path from 'node:path'
 
-import { getSkillDirPath } from '@/lib/skills'
+import { NextResponse } from 'next/server'
+
+const SKILLS_DIR = path.join(process.cwd(), 'skills')
 
 export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/skills/{slug}/download
- * Returns a .skill file (zip archive) for a single skill.
+ * Returns a pre-built .skill file for a single skill.
  */
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params
+  const filePath = path.join(SKILLS_DIR, `${slug}.skill`)
 
-  const dirPath = getSkillDirPath(slug)
-
-  if (!dirPath) {
+  if (!fs.existsSync(filePath)) {
     return NextResponse.json(
       { error: `Skill not found: ${slug}` },
       { status: 404 },
     )
   }
 
-  const chunks: Buffer[] = []
-  const passthrough = new PassThrough()
+  const buffer = fs.readFileSync(filePath)
 
-  passthrough.on('data', (chunk: Buffer) => chunks.push(chunk))
-
-  const archive = archiver('zip', { zlib: { level: 9 } })
-  archive.pipe(passthrough)
-  archive.directory(dirPath, slug)
-  await archive.finalize()
-
-  // Wait for passthrough stream to finish
-  await new Promise<void>((resolve) => passthrough.on('end', resolve))
-
-  const zipBuffer = Buffer.concat(chunks)
-
-  return new NextResponse(zipBuffer, {
+  return new NextResponse(buffer, {
     headers: {
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename="${slug}.skill"`,
-      'Content-Length': String(zipBuffer.length),
+      'Content-Length': String(buffer.length),
     },
   })
 }

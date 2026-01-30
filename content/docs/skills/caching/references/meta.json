@@ -1,0 +1,8 @@
+{
+  "title": "References",
+  "pages": [
+    "cache-invalidation",
+    "caching-strategies",
+    "redis-patterns"
+  ]
+}

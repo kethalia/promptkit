@@ -1,0 +1,9 @@
+{
+  "title": "References",
+  "pages": [
+    "authentication",
+    "error-handling",
+    "pagination-filtering",
+    "rest-conventions"
+  ]
+}

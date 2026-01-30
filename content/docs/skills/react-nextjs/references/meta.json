@@ -1,0 +1,10 @@
+{
+  "title": "References",
+  "pages": [
+    "app-router-migration",
+    "component-review",
+    "extract-patterns",
+    "hooks-best-practices",
+    "performance-optimization"
+  ]
+}

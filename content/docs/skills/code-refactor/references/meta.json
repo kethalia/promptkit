@@ -1,0 +1,9 @@
+{
+  "title": "References",
+  "pages": [
+    "cleanup-unused",
+    "extract-reusable",
+    "improve-quality",
+    "modernize-codebase"
+  ]
+}
