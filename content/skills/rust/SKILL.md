@@ -1,0 +1,265 @@
+---
+name: rust
+description: Rust development workflows for AI coding assistants. Use when reviewing Rust code, handling ownership and borrowing, optimizing performance, or managing errors. Triggers include "Rust", "ownership", "borrowing", "lifetimes", "cargo", "Result", "Option", or when working with .rs files. Covers code review, ownership patterns, error handling, and performance optimization.
+---
+
+# Rust Skill
+
+Specialized workflows for Rust development. This skill covers:
+1. **Code Review** - Rust-specific code review
+2. **Ownership & Borrowing** - Memory safety patterns
+3. **Error Handling** - Result and Option patterns
+4. **Performance** - Zero-cost abstractions and optimization
+
+## Quick Reference
+
+| Scenario | Trigger | Reference |
+|----------|---------|-----------|
+| Code Review | "review Rust code", .rs files | See [code-review.md](references/code-review.md) |
+| Ownership | "ownership", "borrowing", "lifetimes" | See [ownership-borrowing.md](references/ownership-borrowing.md) |
+| Error Handling | "Result", "Option", "error handling" | See [error-handling.md](references/error-handling.md) |
+| Performance | "optimize", "performance", "zero-cost" | See [performance.md](references/performance.md) |
+
+## Rust Fundamentals
+
+### Project Structure
+
+```
+my_project/
+├── Cargo.toml          # Package manifest
+├── Cargo.lock          # Dependency lock file
+├── src/
+│   ├── main.rs         # Binary entry point
+│   ├── lib.rs          # Library entry point
+│   ├── bin/            # Additional binaries
+│   │   └── other.rs
+│   └── modules/
+│       ├── mod.rs
+│       └── submodule.rs
+├── tests/              # Integration tests
+├── benches/            # Benchmarks
+└── examples/           # Example code
+```
+
+### Ownership Rules
+
+```rust
+// 1. Each value has exactly one owner
+let s1 = String::from("hello");
+
+// 2. Value is dropped when owner goes out of scope
+{
+    let s2 = String::from("world");
+} // s2 dropped here
+
+// 3. Ownership can be transferred (moved)
+let s3 = s1;  // s1 is now invalid
+
+// 4. Types implementing Copy are copied, not moved
+let x = 5;
+let y = x;  // x is still valid (i32 implements Copy)
+```
+
+### Borrowing
+
+```rust
+// Immutable borrow (&T)
+fn read(s: &String) {
+    println!("{}", s);
+}
+
+// Mutable borrow (&mut T)
+fn modify(s: &mut String) {
+    s.push_str(" world");
+}
+
+// Rules:
+// - Many immutable borrows OR one mutable borrow
+// - Borrows must be valid (lifetimes)
+```
+
+### Common Types
+
+```rust
+// Option - nullable value
+let maybe: Option<i32> = Some(5);
+let nothing: Option<i32> = None;
+
+// Result - fallible operation
+fn parse(s: &str) -> Result<i32, ParseIntError> {
+    s.parse()
+}
+
+// Vec - dynamic array
+let mut v: Vec<i32> = vec![1, 2, 3];
+v.push(4);
+
+// HashMap
+use std::collections::HashMap;
+let mut map: HashMap<String, i32> = HashMap::new();
+map.insert("key".to_string(), 42);
+
+// String vs &str
+let owned: String = String::from("hello");
+let borrowed: &str = "hello";
+```
+
+### Pattern Matching
+
+```rust
+// match expression
+match value {
+    1 => println!("one"),
+    2 | 3 => println!("two or three"),
+    4..=10 => println!("four to ten"),
+    _ => println!("other"),
+}
+
+// if let
+if let Some(x) = option {
+    println!("{}", x);
+}
+
+// while let
+while let Some(x) = iterator.next() {
+    println!("{}", x);
+}
+
+// let else (Rust 1.65+)
+let Some(x) = option else {
+    return;
+};
+```
+
+## Code Quality Checklist
+
+### Must Have
+- [ ] No `unwrap()` in production code paths
+- [ ] Error types are meaningful
+- [ ] Lifetimes are explicit when needed
+- [ ] `clippy` passes without warnings
+- [ ] Tests exist for public API
+
+### Should Have
+- [ ] Documentation on public items
+- [ ] Examples in doc comments
+- [ ] Appropriate use of `Clone` vs borrowing
+- [ ] Errors implement `std::error::Error`
+- [ ] `#[must_use]` on functions that shouldn't be ignored
+
+### Nice to Have
+- [ ] Zero-copy where possible
+- [ ] `#[inline]` hints for hot paths
+- [ ] Benchmark critical paths
+- [ ] Derive common traits (Debug, Clone, etc.)
+
+## Tools
+
+```bash
+# Build
+cargo build
+cargo build --release
+
+# Test
+cargo test
+cargo test -- --nocapture  # Show output
+
+# Lint
+cargo clippy
+cargo clippy -- -D warnings  # Treat warnings as errors
+
+# Format
+cargo fmt
+
+# Documentation
+cargo doc --open
+
+# Check without building
+cargo check
+
+# Audit dependencies
+cargo audit
+
+# Benchmarks (nightly)
+cargo bench
+```
+
+## Common Patterns
+
+### Builder Pattern
+
+```rust
+#[derive(Default)]
+pub struct RequestBuilder {
+    url: String,
+    method: Method,
+    headers: HashMap<String, String>,
+}
+
+impl RequestBuilder {
+    pub fn new(url: impl Into<String>) -> Self {
+        Self {
+            url: url.into(),
+            ..Default::default()
+        }
+    }
+    
+    pub fn method(mut self, method: Method) -> Self {
+        self.method = method;
+        self
+    }
+    
+    pub fn header(mut self, key: impl Into<String>, value: impl Into<String>) -> Self {
+        self.headers.insert(key.into(), value.into());
+        self
+    }
+    
+    pub fn build(self) -> Request {
+        Request { /* ... */ }
+    }
+}
+```
+
+### Newtype Pattern
+
+```rust
+// Wrap existing type for type safety
+pub struct UserId(pub u64);
+pub struct OrderId(pub u64);
+
+// Now these can't be confused
+fn get_user(id: UserId) -> User { /* ... */ }
+fn get_order(id: OrderId) -> Order { /* ... */ }
+```
+
+## Output Format
+
+When reviewing Rust code:
+
+```markdown
+## Rust Code Review: [Module/File]
+
+### Summary
+- **Module:** [name]
+- **Issues Found:** X critical, X major, X minor
+
+### Issues
+
+#### 🔴 Critical
+- [Unsafe code issue or soundness bug]
+
+#### 🟠 Major
+- [Unwrap in error path, missing error handling]
+
+#### 🟡 Minor
+- [Style issue, clippy warning]
+
+### Recommendations
+```rust
+// Before
+[problematic code]
+
+// After
+[improved code]
+```
+```

@@ -9,86 +9,97 @@
 
 ## Review
 
-- [Review Current Changes](/review/review-current-changes): Review uncommitted changes against documentation and best practices.
-- [PR Review](/review/pr-review): Comprehensive pull request review with context gathering and prioritized findings.
-- [Code Review Checklist](/review/code-review-checklist): Rapid checklist-style review with pass/fail/warning verdicts per category.
+- [Review Current Changes](/docs/review/review-current-changes): Review uncommitted changes against documentation and best practices.
+- [PR Review](/docs/review/pr-review): Comprehensive pull request review with context gathering and prioritized findings.
+- [Code Review Checklist](/docs/review/code-review-checklist): Rapid checklist-style review with pass/fail/warning verdicts per category.
 
 ## Debug
 
-- [Diagnose Error](/debug/diagnose-error): Systematic error diagnosis to identify root cause and suggest fixes.
-- [Trace Bug](/debug/trace-bug): Step-by-step bug tracing through codebase execution flow.
-- [Analyze Stack Trace](/debug/analyze-stack-trace): Parse and explain stack traces to identify error origin and fixes.
+- [Diagnose Error](/docs/debug/diagnose-error): Systematic error diagnosis to identify root cause and suggest fixes.
+- [Trace Bug](/docs/debug/trace-bug): Step-by-step bug tracing through codebase execution flow.
+- [Analyze Stack Trace](/docs/debug/analyze-stack-trace): Parse and explain stack traces to identify error origin and fixes.
 
 ## Refactor
 
-- [Improve Code Quality](/refactor/improve-code-quality): Analyze and refactor code for better readability, maintainability, and adherence to best practices.
-- [Extract Reusable Components](/refactor/extract-reusable): Identify duplicated or similar code patterns and extract them into reusable functions, components, hooks, or utilities.
-- [Modernize Codebase](/refactor/modernize-codebase): Identify and update deprecated APIs, old syntax, and outdated patterns to modern alternatives.
-- [Cleanup Unused Code](/refactor/cleanup-unused-code): Systematically identify and remove unused code, files, and dependencies from the repository.
+- [Improve Code Quality](/docs/refactor/improve-code-quality): Analyze and refactor code for better readability, maintainability, and adherence to best practices.
+- [Extract Reusable Components](/docs/refactor/extract-reusable): Identify duplicated or similar code patterns and extract them into reusable functions, components, hooks, or utilities.
+- [Modernize Codebase](/docs/refactor/modernize-codebase): Identify and update deprecated APIs, old syntax, and outdated patterns to modern alternatives.
+- [Cleanup Unused Code](/docs/refactor/cleanup-unused-code): Systematically identify and remove unused code, files, and dependencies from the repository.
 
 ## Testing
 
-- [Write Unit Tests](/testing/write-unit-tests): Generate meaningful unit tests that verify actual behavior, not just code structure.
-- [Generate Test Cases](/testing/generate-test-cases): Generate edge cases and scenarios that catch real bugs.
-- [Improve Test Coverage](/testing/improve-test-coverage): Find gaps in test coverage and add tests that verify real behavior.
-- [Review Test Quality](/testing/review-test-quality): Identify meaningless, fake, or ineffective tests that don't actually validate code behavior.
+- [Write Unit Tests](/docs/testing/write-unit-tests): Generate meaningful unit tests that verify actual behavior, not just code structure.
+- [Generate Test Cases](/docs/testing/generate-test-cases): Generate edge cases and scenarios that catch real bugs.
+- [Improve Test Coverage](/docs/testing/improve-test-coverage): Find gaps in test coverage and add tests that verify real behavior.
+- [Review Test Quality](/docs/testing/review-test-quality): Identify meaningless, fake, or ineffective tests that don't actually validate code behavior.
 
 ## Documentation
 
-- [Generate README](/documentation/generate-readme): Create or update a comprehensive project README based on actual codebase analysis.
-- [Document Function](/documentation/document-function): Generate comprehensive documentation for a function in the appropriate format for its language.
-- [Generate API Docs](/documentation/generate-api-docs): Document REST/HTTP API endpoints from codebase analysis.
-- [Review Documentation Consistency](/documentation/review-documentation-consistency): Review code documentation independently for internal consistency, accuracy, clarity, and correctness without comparing to implementation.
-- [Review Documentation Sync](/documentation/review-documentation-sync): Review code documentation and verify it is synchronized with actual code implementation.
+- [Generate README](/docs/documentation/generate-readme): Create or update a comprehensive project README based on actual codebase analysis.
+- [Document Function](/docs/documentation/document-function): Generate comprehensive documentation for a function in the appropriate format for its language.
+- [Generate API Docs](/docs/documentation/generate-api-docs): Document REST/HTTP API endpoints from codebase analysis.
+- [Review Documentation Consistency](/docs/documentation/review-documentation-consistency): Review code documentation independently for internal consistency, accuracy, clarity, and correctness without comparing to implementation.
+- [Review Documentation Sync](/docs/documentation/review-documentation-sync): Review code documentation and verify it is synchronized with actual code implementation.
 
 ## Architecture
 
-- [Design Review](/architecture/design-review): Review system or component design for architectural quality and alignment with best practices.
-- [Suggest Design Patterns](/architecture/suggest-patterns): Recommend applicable design patterns for a given problem or code structure.
-- [Evaluate Tradeoffs](/architecture/evaluate-tradeoffs): Compare multiple approaches with structured pros/cons analysis and recommendation.
+- [Design Review](/docs/architecture/design-review): Review system or component design for architectural quality and alignment with best practices.
+- [Suggest Design Patterns](/docs/architecture/suggest-patterns): Recommend applicable design patterns for a given problem or code structure.
+- [Evaluate Tradeoffs](/docs/architecture/evaluate-tradeoffs): Compare multiple approaches with structured pros/cons analysis and recommendation.
 
 ## Security
 
-- [Security Audit](/security/security-audit): Comprehensive security review identifying vulnerabilities, misconfigurations, and compliance gaps.
-- [Check Vulnerabilities](/security/check-vulnerabilities): Quick scan for common security vulnerabilities with actionable fixes.
-- [Dependency Audit](/security/dependency-audit): Review project dependencies for security vulnerabilities, outdated packages, and supply chain risks.
+- [Security Audit](/docs/security/security-audit): Comprehensive security review identifying vulnerabilities, misconfigurations, and compliance gaps.
+- [Check Vulnerabilities](/docs/security/check-vulnerabilities): Quick scan for common security vulnerabilities with actionable fixes.
+- [Dependency Audit](/docs/security/dependency-audit): Review project dependencies for security vulnerabilities, outdated packages, and supply chain risks.
 
 ## Planning
 
-- [Bootstrap Project Documentation](/planning/bootstrap-project-documentation): Create comprehensive pre-development project documentation through an interactive question-based workflow.
-- [Create GitHub Issues](/planning/create-github-issues): Create structured GitHub issues organized as epics with digestible sub-issues that build incrementally on each other.
+- [Bootstrap Project Documentation](/docs/planning/bootstrap-project-documentation): Create comprehensive pre-development project documentation through an interactive question-based workflow.
+- [Create GitHub Issues](/docs/planning/create-github-issues): Create structured GitHub issues organized as epics with digestible sub-issues that build incrementally on each other.
 
 ## TypeScript
 
-- [Type Safety Review](/language-specific/typescript/type-safety-review): Analyze TypeScript code for type safety issues and propose improvements with examples.
-- [Fix TypeScript Errors](/language-specific/typescript/fix-type-errors): Diagnose TypeScript compilation errors, explain them clearly, and propose type-safe fixes.
-- [Migrate to TypeScript](/language-specific/typescript/migrate-to-typescript): Convert JavaScript files to TypeScript with proper types and an incremental migration plan.
+- [Type Safety Review](/docs/language-specific/typescript/type-safety-review): Analyze TypeScript code for type safety issues and propose improvements with examples.
+- [Fix TypeScript Errors](/docs/language-specific/typescript/fix-type-errors): Diagnose TypeScript compilation errors, explain them clearly, and propose type-safe fixes.
+- [Migrate to TypeScript](/docs/language-specific/typescript/migrate-to-typescript): Convert JavaScript files to TypeScript with proper types and an incremental migration plan.
 
 ## React & Next.js
 
-- [Component Review](/language-specific/react-nextjs/component-review): Review React component design for structure, props, state management, and best practices.
-- [Hooks Best Practices](/language-specific/react-nextjs/hooks-best-practices): Review React hooks usage for correctness, dependency arrays, and common pitfalls.
-- [Performance Optimization](/language-specific/react-nextjs/performance-optimization): Fix React performance issues including re-renders, memoization, and bundle optimization.
-- [App Router Migration](/language-specific/react-nextjs/nextjs-app-router-migration): Migrate from Pages Router to App Router with server components and new data fetching patterns.
-- [Extract Constants](/language-specific/react-nextjs/extract-constants): Identify and extract hardcoded values into well-organized constants for Next.js applications.
-- [Extract Utility Functions](/language-specific/react-nextjs/extract-utility-functions): Identify and extract pure utility functions from Next.js codebases to improve reusability and testability.
+- [Component Review](/docs/language-specific/react-nextjs/component-review): Review React component design for structure, props, state management, and best practices.
+- [Hooks Best Practices](/docs/language-specific/react-nextjs/hooks-best-practices): Review React hooks usage for correctness, dependency arrays, and common pitfalls.
+- [Performance Optimization](/docs/language-specific/react-nextjs/performance-optimization): Fix React performance issues including re-renders, memoization, and bundle optimization.
+- [App Router Migration](/docs/language-specific/react-nextjs/nextjs-app-router-migration): Migrate from Pages Router to App Router with server components and new data fetching patterns.
+- [Extract Constants](/docs/language-specific/react-nextjs/extract-constants): Identify and extract hardcoded values into well-organized constants for Next.js applications.
+- [Extract Utility Functions](/docs/language-specific/react-nextjs/extract-utility-functions): Identify and extract pure utility functions from Next.js codebases to improve reusability and testability.
 
 ## Go
 
-- [Go Idioms Review](/language-specific/go/go-idioms-review): Review code for idiomatic Go patterns following Effective Go guidelines.
-- [Concurrency Review](/language-specific/go/concurrency-review): Review Go code for concurrency issues, goroutine leaks, race conditions, and proper synchronization.
-- [Error Handling Review](/language-specific/go/error-handling-review): Review Go code for proper error handling patterns, validation, and consistency.
+- [Go Idioms Review](/docs/language-specific/go/go-idioms-review): Review code for idiomatic Go patterns following Effective Go guidelines.
+- [Concurrency Review](/docs/language-specific/go/concurrency-review): Review Go code for concurrency issues, goroutine leaks, race conditions, and proper synchronization.
+- [Error Handling Review](/docs/language-specific/go/error-handling-review): Review Go code for proper error handling patterns, validation, and consistency.
 
 ## Rust
 
-- [Ownership & Borrowing Review](/language-specific/rust/ownership-review): Review Rust code for ownership patterns, borrowing correctness, and idiomatic memory management.
-- [Unsafe Code Audit](/language-specific/rust/unsafe-code-audit): Systematically audit all unsafe blocks for soundness, invariants, and potential undefined behavior.
-- [Cargo Best Practices](/language-specific/rust/cargo-best-practices): Review Cargo configuration for structure, dependencies, features, and build optimization.
+- [Ownership & Borrowing Review](/docs/language-specific/rust/ownership-review): Review Rust code for ownership patterns, borrowing correctness, and idiomatic memory management.
+- [Unsafe Code Audit](/docs/language-specific/rust/unsafe-code-audit): Systematically audit all unsafe blocks for soundness, invariants, and potential undefined behavior.
+- [Cargo Best Practices](/docs/language-specific/rust/cargo-best-practices): Review Cargo configuration for structure, dependencies, features, and build optimization.
 
 ## Solidity
 
-- [Smart Contract Audit](/language-specific/solidity/smart-contract-audit): Perform a comprehensive security audit of Solidity smart contracts.
-- [Gas Optimization](/language-specific/solidity/gas-optimization): Optimize Solidity smart contract gas usage while balancing readability, maintainability, and security.
-- [Upgrade Solidity Version](/language-specific/solidity/upgrade-solidity-version): Migrate Solidity smart contracts to a newer compiler version, addressing breaking changes and adopting new features.
-- [Foundry Test Coverage](/language-specific/solidity/foundry-test-coverage): Generate comprehensive Foundry tests with unit tests, fuzz tests, and invariant tests that verify actual contract behavior.
-- [Hardhat Test Coverage](/language-specific/solidity/hardhat-test-coverage): Generate comprehensive Hardhat tests using Mocha/Chai and ethers.js that verify actual contract behavior.
+- [Smart Contract Audit](/docs/language-specific/solidity/smart-contract-audit): Perform a comprehensive security audit of Solidity smart contracts.
+- [Gas Optimization](/docs/language-specific/solidity/gas-optimization): Optimize Solidity smart contract gas usage while balancing readability, maintainability, and security.
+- [Upgrade Solidity Version](/docs/language-specific/solidity/upgrade-solidity-version): Migrate Solidity smart contracts to a newer compiler version, addressing breaking changes and adopting new features.
+- [Foundry Test Coverage](/docs/language-specific/solidity/foundry-test-coverage): Generate comprehensive Foundry tests with unit tests, fuzz tests, and invariant tests that verify actual contract behavior.
+- [Hardhat Test Coverage](/docs/language-specific/solidity/hardhat-test-coverage): Generate comprehensive Hardhat tests using Mocha/Chai and ethers.js that verify actual contract behavior.
+
+## Skills
+
+Skills are structured Agent Skills packages following the [Agent Skills](https://agentskills.io) open standard. Each skill bundles instructions, reference material, and supporting files that extend AI agent capabilities.
+
+- [Skills Catalog API](/api/skills): JSON catalog of all skills with metadata
+- [All Skills with Content](/api/skills/all): All skills with full inline content
+- [Download All Skills](/api/skills/all/download): Download all skills as .skill files
+
+- [Code Review](/docs/skills/code-review): Comprehensive code review workflows for AI coding assistants. Covers PR reviews, current changes analysis, and systematic code review checklists.
+- [Code Testing](/docs/skills/code-testing): Comprehensive testing workflows for AI coding assistants. Covers unit test generation, test case design, coverage improvement, and test quality assessment.

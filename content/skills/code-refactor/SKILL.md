@@ -1,0 +1,272 @@
+---
+name: code-refactor
+description: Code refactoring workflows for AI coding assistants. Use when improving code quality, extracting reusable components, modernizing codebases, or cleaning up unused code. Triggers include "refactor this", "clean up this code", "improve code quality", "extract component", "modernize", "remove dead code", "make this more maintainable", or when code smells are identified. Covers quality improvements, DRY extraction, modernization, and dead code removal.
+---
+
+# Code Refactor Skill
+
+Systematic workflows for improving code without changing its behavior. This skill covers four main scenarios:
+1. **Improve Code Quality** - General code improvements and smell removal
+2. **Extract Reusable Components** - DRY principle, extract patterns
+3. **Modernize Codebase** - Update to modern patterns and syntax
+4. **Cleanup Unused Code** - Remove dead code safely
+
+## Quick Reference
+
+| Scenario | Trigger | Reference |
+|----------|---------|-----------|
+| Improve Quality | "clean up", "improve", code smells | See [improve-quality.md](references/improve-quality.md) |
+| Extract Components | "extract", "reuse", "DRY" | See [extract-reusable.md](references/extract-reusable.md) |
+| Modernize | "modernize", "update", "upgrade" | See [modernize-codebase.md](references/modernize-codebase.md) |
+| Cleanup | "remove dead code", "unused" | See [cleanup-unused.md](references/cleanup-unused.md) |
+
+## Core Refactoring Principles
+
+### The Refactoring Mindset
+
+> **Refactoring** = Improving code structure without changing behavior
+
+**Golden Rules:**
+1. **Tests first** - Have tests before refactoring
+2. **Small steps** - One change at a time
+3. **Verify often** - Run tests after each change
+4. **Commit frequently** - Easy to rollback
+
+### When to Refactor
+
+**Good times:**
+- Before adding new features
+- After getting code working
+- During code review
+- When fixing bugs (while there)
+
+**Bad times:**
+- Near deadlines with no tests
+- When you don't understand the code
+- As a substitute for rewriting
+
+### Refactoring Safety
+
+```
+Before Refactoring:
+├── Tests passing? ✓
+├── Version controlled? ✓
+├── Understand the code? ✓
+└── Small, reversible step? ✓
+```
+
+## Code Smell Categories
+
+### Bloaters
+Code that grows too large:
+
+| Smell | Signs | Fix |
+|-------|-------|-----|
+| Long Method | >20 lines, scrolling | Extract Method |
+| Large Class | Too many responsibilities | Extract Class |
+| Long Parameter List | >3 parameters | Parameter Object |
+| Data Clumps | Same data groups together | Extract Class |
+
+### Object-Orientation Abusers
+
+| Smell | Signs | Fix |
+|-------|-------|-----|
+| Switch Statements | Repeated switch/if-else | Polymorphism |
+| Refused Bequest | Subclass doesn't use inherited | Push Down / Remove inheritance |
+| Temporary Field | Fields only sometimes used | Extract Class |
+
+### Change Preventers
+Code that makes changes hard:
+
+| Smell | Signs | Fix |
+|-------|-------|-----|
+| Divergent Change | One class changed for many reasons | Extract Class |
+| Shotgun Surgery | One change affects many classes | Move/Inline Method |
+| Parallel Inheritance | Create subclass = must create another | Merge hierarchies |
+
+### Dispensables
+Unnecessary code:
+
+| Smell | Signs | Fix |
+|-------|-------|-----|
+| Dead Code | Unreachable code | Delete |
+| Duplicate Code | Same code multiple places | Extract Method |
+| Speculative Generality | Unused abstraction | Inline/Remove |
+| Comments (excessive) | Comments explain bad code | Refactor code to be clear |
+
+### Couplers
+Excessive coupling:
+
+| Smell | Signs | Fix |
+|-------|-------|-----|
+| Feature Envy | Method uses other class more | Move Method |
+| Inappropriate Intimacy | Classes know too much | Extract/Move |
+| Message Chains | a.b().c().d() | Hide Delegate |
+| Middle Man | Class only delegates | Remove/Inline |
+
+## Common Refactoring Techniques
+
+### Extract Method
+
+**Before:**
+```javascript
+function printReport(data) {
+  console.log("=== REPORT ===");
+  console.log("Date: " + new Date());
+  console.log("");
+  
+  let total = 0;
+  for (const item of data) {
+    total += item.amount;
+  }
+  console.log("Total: " + total);
+}
+```
+
+**After:**
+```javascript
+function printReport(data) {
+  printHeader();
+  const total = calculateTotal(data);
+  console.log("Total: " + total);
+}
+
+function printHeader() {
+  console.log("=== REPORT ===");
+  console.log("Date: " + new Date());
+  console.log("");
+}
+
+function calculateTotal(data) {
+  return data.reduce((sum, item) => sum + item.amount, 0);
+}
+```
+
+### Replace Conditionals with Polymorphism
+
+**Before:**
+```javascript
+function getSpeed(vehicle) {
+  switch (vehicle.type) {
+    case 'car': return vehicle.baseSpeed * 1.2;
+    case 'bike': return vehicle.baseSpeed * 0.8;
+    case 'plane': return vehicle.baseSpeed * 5;
+    default: return vehicle.baseSpeed;
+  }
+}
+```
+
+**After:**
+```javascript
+class Vehicle {
+  getSpeed() { return this.baseSpeed; }
+}
+
+class Car extends Vehicle {
+  getSpeed() { return this.baseSpeed * 1.2; }
+}
+
+class Bike extends Vehicle {
+  getSpeed() { return this.baseSpeed * 0.8; }
+}
+
+class Plane extends Vehicle {
+  getSpeed() { return this.baseSpeed * 5; }
+}
+```
+
+### Introduce Parameter Object
+
+**Before:**
+```javascript
+function createUser(name, email, age, city, country, postalCode) {
+  // ...
+}
+```
+
+**After:**
+```javascript
+function createUser(personalInfo, address) {
+  // ...
+}
+
+// Called as:
+createUser(
+  { name, email, age },
+  { city, country, postalCode }
+);
+```
+
+## Refactoring Workflow
+
+```
+1. IDENTIFY    → Find the code smell
+2. PLAN        → Choose refactoring technique
+3. TEST        → Ensure tests exist
+4. REFACTOR    → Make small change
+5. VERIFY      → Run tests
+6. COMMIT      → Save progress
+7. REPEAT      → Next small change
+```
+
+## Output Format
+
+When suggesting refactoring:
+
+```markdown
+## Refactoring Recommendation
+
+### Current Issue
+[Describe the code smell or problem]
+
+### Technique
+[Name of refactoring technique]
+
+### Before
+```[language]
+[Original code]
+```
+
+### After
+```[language]
+[Refactored code]
+```
+
+### Benefits
+- [Improvement 1]
+- [Improvement 2]
+
+### Risks
+- [Potential issue to watch]
+
+### Steps
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+```
+
+## Tools Support
+
+### IDE Refactoring
+
+Most IDEs support automated refactoring:
+
+| Refactoring | VS Code | IntelliJ | Vim |
+|-------------|---------|----------|-----|
+| Rename | F2 | Shift+F6 | :Rename |
+| Extract Method | Ctrl+. | Ctrl+Alt+M | :Extract |
+| Extract Variable | Ctrl+. | Ctrl+Alt+V | :Extract |
+| Inline | Ctrl+. | Ctrl+Alt+N | - |
+
+### Linting for Smells
+
+```bash
+# JavaScript
+npx eslint --rule 'complexity: ["error", 10]'
+
+# Python
+pylint --max-line-length=100
+
+# General
+npx depcruise --validate .dependency-cruiser.js src
+```

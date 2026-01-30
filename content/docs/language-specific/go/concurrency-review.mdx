@@ -1,0 +1,175 @@
+---
+title: "Go Concurrency Review"
+description: "Review Go code for concurrency issues, goroutine leaks, race conditions, and proper synchronization."
+---
+
+# Go Concurrency Review
+
+Review Go code for concurrency issues, goroutine leaks, race conditions, and proper synchronization.
+
+---
+
+## Context
+
+Gather the following before starting the review:
+
+1. List all `.go` files containing goroutines (`go ` keyword)
+2. Identify all channel declarations and usages
+3. Find all uses of `sync` package primitives (Mutex, WaitGroup, Once, etc.)
+4. Check for `context.Context` usage patterns
+5. Look for any existing race detector results (`go test -race`)
+
+## Instructions
+
+1. **Identify goroutine leaks**
+   - Verify every goroutine has a clear termination condition
+   - Check for goroutines blocked on channel operations that never complete
+   - Look for goroutines waiting on conditions that may never be met
+   - Ensure goroutines started in loops capture variables correctly
+   - Check for goroutines that outlive their parent function unintentionally
+
+2. **Review channel usage and closing**
+   - Verify buffered vs unbuffered channels are used appropriately
+   - Check that channels are closed by senders, not receivers
+   - Ensure channels are closed exactly once (no double-close panics)
+   - Look for send/receive on nil channels (blocks forever)
+   - Verify proper use of directional channel types (`chan<-`, `<-chan`)
+   - Check for range over channels without close
+
+3. **Check for race conditions**
+   - Find shared variables accessed from multiple goroutines
+   - Check for unprotected map access (maps are not goroutine-safe)
+   - Look for read-modify-write patterns without synchronization
+   - Verify struct fields aren't accessed concurrently without locks
+   - Check for races in lazy initialization patterns
+   - Identify closure variable capture issues in goroutines
+
+4. **Validate context usage for cancellation**
+   - Verify context is first parameter in functions
+   - Check that context cancellation is respected in long-running operations
+   - Ensure derived contexts are used appropriately (`WithCancel`, `WithTimeout`)
+   - Look for context values used for passing request-scoped data only
+   - Verify contexts are not stored in structs
+   - Check for proper cleanup when context is cancelled
+
+5. **Review sync primitives (Mutex, WaitGroup, etc.)**
+   - Verify `Mutex` is not copied (pass by pointer)
+   - Check `WaitGroup.Add()` is called before goroutine starts
+   - Ensure `WaitGroup.Done()` is called with `defer`
+   - Check for proper `RWMutex` usage (read vs write locks)
+   - Verify `Once.Do()` is used correctly for one-time initialization
+   - Look for opportunities to use `sync.Pool`, `sync.Map`, or `atomic`
+
+6. **Check for proper select usage**
+   - Verify select statements handle all expected cases
+   - Check for select without default that may block unexpectedly
+   - Look for empty default cases that cause busy-waiting
+   - Ensure timeout cases use appropriate durations
+   - Check for proper handling of closed channels in select
+
+7. **Identify deadlock risks**
+   - Check for circular wait conditions
+   - Look for lock ordering issues with multiple mutexes
+   - Verify channels have both senders and receivers
+   - Check for blocking operations without timeouts
+   - Identify nested locks that could cause deadlock
+
+## Output Format
+
+```markdown
+## Concurrency Review: [package-name]
+
+### Summary
+- **Risk Level**: [Critical/High/Medium/Low]
+- **Goroutine Leaks**: [count] potential
+- **Race Conditions**: [count] potential
+- **Deadlock Risks**: [count] potential
+
+### Goroutine Leaks
+
+#### [Issue Title]
+**Location**: `file.go:line`
+**Severity**: [Critical/High/Medium]
+**Problem**: [Description of why goroutine may leak]
+**Code**:
+```go
+// problematic code
+```
+**Fix**:
+```go
+// corrected code with proper termination
+```
+
+### Channel Issues
+
+| Location | Issue | Severity | Fix |
+|----------|-------|----------|-----|
+| file:line | Channel never closed | High | Add close in defer |
+| file:line | Range on unclosed channel | Medium | Ensure sender closes |
+
+### Race Conditions
+
+#### [Issue Title]
+**Location**: `file.go:line`
+**Shared Resource**: [variable/field name]
+**Access Pattern**: [describe concurrent access]
+**Fix**:
+```go
+// protected access pattern
+```
+
+### Context Usage
+
+| Location | Issue | Recommendation |
+|----------|-------|----------------|
+| file:line | Context not checked in loop | Add `select` with `ctx.Done()` |
+| file:line | Context stored in struct | Pass context as parameter |
+
+### Sync Primitives
+
+| Location | Primitive | Issue | Fix |
+|----------|-----------|-------|-----|
+| file:line | Mutex | Copied in function call | Pass pointer |
+| file:line | WaitGroup | Add after goroutine start | Move Add before go statement |
+
+### Select Statement Issues
+
+| Location | Issue | Risk | Recommendation |
+|----------|-------|------|----------------|
+| file:line | No default case | May block | Add timeout or default |
+
+### Deadlock Risks
+
+#### [Scenario]
+**Involved Resources**: [list locks/channels]
+**Condition**: [how deadlock can occur]
+**Prevention**:
+```go
+// safe pattern
+```
+
+### Recommendations
+1. **Critical**: [Must fix - active bugs]
+2. **High**: [Should fix - potential production issues]
+3. **Medium**: [Improve - code quality]
+
+### Testing Suggestions
+- Run: `go test -race ./...`
+- Add test: [specific scenario to test]
+```
+
+## Interactive Decisions
+
+Pause and ask the user when encountering:
+
+1. **Uncertain goroutine lifecycle**: "Goroutine at `[location]` has no obvious termination. Is this intentionally long-running (daemon-style) or should it have a shutdown mechanism?"
+
+2. **Potential race uncertainty**: "Variable `[name]` at `[location]` may be accessed concurrently, but I cannot determine the execution flow. Should I flag this as a potential race?"
+
+3. **Channel buffer sizing**: "Channel at `[location]` uses buffer size `[n]`. This appears arbitrary. Should I suggest a different size or document the reasoning?"
+
+4. **Performance vs safety trade-off**: "Adding synchronization to `[location]` would be safer but may impact performance. Should I suggest the safer approach?"
+
+5. **Context propagation**: "Function `[name]` doesn't accept a context but calls functions that do. Should I suggest adding context to the signature?"
+
+6. **Mutex vs channel choice**: "This code uses `[sync primitive]` but the pattern might be cleaner with `[alternative]`. Should I suggest refactoring?"

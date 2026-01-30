@@ -1,8 +1,7 @@
-import { Footer, Layout, Navbar } from 'nextra-theme-docs'
-import { Head } from 'nextra/components'
-import { getPageMap } from 'nextra/page-map'
-import 'nextra-theme-docs/style.css'
+import { RootProvider } from 'fumadocs-ui/provider/next'
 import './globals.css'
+
+import type { ReactNode } from 'react'
 
 export const metadata = {
   title: {
@@ -13,36 +12,11 @@ export const metadata = {
     'A curated collection of reusable AI coding prompts optimized for opencode and Claude.',
 }
 
-const navbar = (
-  <Navbar
-    logo={<b>AI Prompts</b>}
-    projectLink="https://github.com/kethalia/ai-prompts"
-  />
-)
-
-const footer = (
-  <Footer>
-    MIT {new Date().getFullYear()} – AI Prompts for Coding
-  </Footer>
-)
-
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning>
-      <Head />
-      <body>
-        <Layout
-          navbar={navbar}
-          pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/kethalia/ai-prompts/tree/main/content"
-          footer={footer}
-        >
-          {children}
-        </Layout>
+    <html lang="en" suppressHydrationWarning>
+      <body className="flex min-h-screen flex-col">
+        <RootProvider>{children}</RootProvider>
       </body>
     </html>
   )

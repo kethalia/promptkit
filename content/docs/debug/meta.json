@@ -1,0 +1,8 @@
+{
+  "title": "Debug",
+  "pages": [
+    "diagnose-error",
+    "trace-bug",
+    "analyze-stack-trace"
+  ]
+}

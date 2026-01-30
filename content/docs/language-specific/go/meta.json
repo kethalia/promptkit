@@ -1,0 +1,8 @@
+{
+  "title": "Go",
+  "pages": [
+    "go-idioms-review",
+    "concurrency-review",
+    "error-handling-review"
+  ]
+}

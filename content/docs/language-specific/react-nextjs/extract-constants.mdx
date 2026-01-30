@@ -1,0 +1,216 @@
+---
+title: "Extract Constants"
+description: "Identify and extract hardcoded values into well-organized constants for Next.js applications."
+---
+
+# Extract Constants
+
+Identify and extract hardcoded values into well-organized constants for Next.js applications.
+
+---
+
+## Context
+
+Before analyzing, gather:
+1. The target codebase or specific directories to analyze
+2. Existing constant/config files in the project
+3. Next.js version and whether App Router or Pages Router is used
+4. Environment variable patterns (`.env` usage)
+5. Project structure and where constants typically live
+
+## Instructions
+
+1. **Identify Hardcoded Values**
+   - Magic numbers (timeouts, limits, dimensions, etc.)
+   - Repeated string literals (routes, labels, messages, keys)
+   - Configuration values (API endpoints, feature flags)
+   - CSS values (colors, spacing, breakpoints, z-indexes)
+   - Repeated object shapes (default states, empty objects)
+   - Date/time values (formats, intervals, timestamps)
+   - Regular expressions
+   - MIME types, file extensions
+   - HTTP status codes
+   - Query parameter names, local storage keys
+
+2. **Categorize Constants**
+   - **Routes:** Page paths, API routes, external URLs
+   - **UI Constants:** Colors, sizes, breakpoints, animations
+   - **App Config:** Feature flags, limits, pagination sizes
+   - **API Config:** Endpoints, timeouts, retry counts
+   - **Messages:** Error messages, validation messages, labels
+   - **Keys:** Storage keys, cookie names, query params
+   - **Formats:** Date formats, number formats, regex patterns
+   - **Business Logic:** Thresholds, rates, default values
+
+3. **Evaluate Extraction Criteria**
+   For each candidate:
+   - Appears 2+ times across the codebase
+   - Likely to change during development/maintenance
+   - Has business/domain meaning (not arbitrary)
+   - Benefits from centralization
+   - NOT already managed by environment variables
+   - NOT framework-specific conventions (e.g., `page.tsx`, `layout.tsx`)
+
+4. **Organize by Domain**
+   - Group related constants together
+   - Use hierarchical structures (nested objects) for clarity
+   - Follow TypeScript `as const` for type inference
+   - Consider splitting by feature/module vs. centralized
+
+5. **Determine Location**
+   - `src/constants/` or `src/config/` for global constants
+   - `app/[feature]/constants.ts` for feature-specific (App Router)
+   - `constants/index.ts` with re-exports for organization
+   - Environment variables (`.env`) for deployment-specific values
+
+## Output Format
+
+For each constant extraction:
+
+```markdown
+### [Constant Category Name]
+**Type:** Route/UI/Config/Message/Key/Format/Business
+**Occurrences:** X times across Y files
+**Confidence:** High/Medium/Low
+
+**Current Usages:**
+- `file1:line` - [context/value]
+- `file2:line` - [context/value]
+- ...
+
+**Proposed Constant:**
+```typescript
+// Location: src/constants/[category].ts
+export const [CONSTANT_NAME] = {
+  [KEY]: 'value',
+  // ...
+} as const;
+
+// Or for TypeScript enums/unions:
+export type [TypeName] = typeof [CONSTANT_NAME][keyof typeof [CONSTANT_NAME]];
+```
+
+**Migration Example:**
+
+Before (`file1:line`):
+```typescript
+if (status === 'pending') {
+  // ...
+}
+```
+
+After:
+```typescript
+import { ORDER_STATUS } from '@/constants/orders';
+
+if (status === ORDER_STATUS.PENDING) {
+  // ...
+}
+```
+
+**Benefits:**
+- Single source of truth
+- Type safety improvements
+- Easier to find and update
+- Reduces typos and inconsistencies
+```
+
+### Extraction Summary
+
+| Constant | Category | Occurrences | Files | Confidence | Priority |
+|----------|----------|-------------|-------|------------|----------|
+| ... | ... | ... | ... | ... | ... |
+
+## Next.js Specific Patterns
+
+### Route Constants
+```typescript
+// src/constants/routes.ts
+export const ROUTES = {
+  HOME: '/',
+  DASHBOARD: '/dashboard',
+  API: {
+    AUTH: '/api/auth',
+    USERS: '/api/users',
+  },
+} as const;
+
+export const EXTERNAL_URLS = {
+  DOCS: 'https://docs.example.com',
+  SUPPORT: 'https://support.example.com',
+} as const;
+```
+
+### App Router Metadata Constants
+```typescript
+// src/constants/metadata.ts
+export const SITE_CONFIG = {
+  NAME: 'My App',
+  DESCRIPTION: 'App description',
+  URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+} as const;
+```
+
+### API Configuration
+```typescript
+// src/constants/api.ts
+export const API_CONFIG = {
+  TIMEOUT: 30000,
+  RETRY_ATTEMPTS: 3,
+  ENDPOINTS: {
+    BASE: process.env.NEXT_PUBLIC_API_URL,
+  },
+} as const;
+```
+
+### UI Constants
+```typescript
+// src/constants/ui.ts
+export const BREAKPOINTS = {
+  SM: 640,
+  MD: 768,
+  LG: 1024,
+  XL: 1280,
+} as const;
+
+export const Z_INDEX = {
+  DROPDOWN: 1000,
+  MODAL: 1100,
+  TOAST: 1200,
+} as const;
+```
+
+## Interactive Decisions
+
+Pause and ask the user:
+
+1. **Scope of Search**
+   - "Should I search the entire codebase or specific directories? (e.g., `app/`, `src/components/`)"
+
+2. **Minimum Threshold**
+   - "What's the minimum number of occurrences to extract? (default: 2)"
+
+3. **Organization Strategy**
+   - "How should constants be organized?
+     a) Single file (`constants/index.ts`)
+     b) By category (`constants/routes.ts`, `constants/ui.ts`, etc.)
+     c) By feature/module (`app/[feature]/constants.ts`)
+     d) Mix of global + feature-specific"
+
+4. **Environment Variables**
+   - "Found deployment-specific values. Should these use environment variables instead of constants?"
+
+5. **Implementation**
+   - "Found X constant candidates. Should I:
+     a) Create constant files and show migration examples
+     b) Create files and update all usages
+     c) Show analysis only (no code changes)"
+
+## Exclusions
+
+Do NOT extract:
+- Framework conventions (`'use client'`, `'use server'`)
+- File system paths (handled by Next.js routing)
+- One-off display strings (unless repeated)
+- Values that are truly arbitrary/meaningless
+- Already in environment variables (`.env`)

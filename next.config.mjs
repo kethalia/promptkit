@@ -1,10 +1,10 @@
-import nextra from 'nextra'
+import { createMDX } from 'fumadocs-mdx/next'
 
-const withNextra = nextra({
-  // Pagefind search enabled by default
-  // Code block indexing enabled by default
-})
+const withMDX = createMDX()
 
-export default withNextra({
+/** @type {import('next').NextConfig} */
+const config = {
   output: 'standalone',
-})
+}
+
+export default withMDX(config)
