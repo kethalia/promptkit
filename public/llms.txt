@@ -101,5 +101,26 @@ Skills are structured Agent Skills packages following the [Agent Skills](https:/
 - [All Skills with Content](/api/skills/all): All skills with full inline content
 - [Download All Skills](/api/skills/all/download): Download all skills as .skill files
 
-- [Code Review](/docs/skills/code-review): Comprehensive code review workflows for AI coding assistants. Covers PR reviews, current changes analysis, and systematic code review checklists.
-- [Code Testing](/docs/skills/code-testing): Comprehensive testing workflows for AI coding assistants. Covers unit test generation, test case design, coverage improvement, and test quality assessment.
+- [Accessibility](/docs/skills/accessibility): Web accessibility (a11y) patterns for inclusive design.
+- [API Design](/docs/skills/api-design): API design patterns for full-stack development.
+- [Caching](/docs/skills/caching): Caching strategies and Redis patterns.
+- [CI/CD](/docs/skills/ci-cd): CI/CD pipeline patterns with GitHub Actions.
+- [Code Debug](/docs/skills/code-debug): Systematic debugging workflows.
+- [Code Refactor](/docs/skills/code-refactor): Code refactoring workflows.
+- [Code Review](/docs/skills/code-review): Comprehensive code review workflows for AI coding assistants.
+- [Code Security](/docs/skills/code-security): Security-focused code analysis.
+- [Code Testing](/docs/skills/code-testing): Comprehensive testing workflows for AI coding assistants.
+- [CSS Styling](/docs/skills/css-styling): CSS and styling patterns for modern web development.
+- [Database](/docs/skills/database): Database workflows for full-stack development.
+- [Docker](/docs/skills/docker): Docker containerization workflows.
+- [Documentation](/docs/skills/documentation): Documentation generation workflows.
+- [Git Workflows](/docs/skills/git-workflows): Git workflow patterns for teams.
+- [GitHub Project Management](/docs/skills/github-project-management): GitHub project management with issues.
+- [Go](/docs/skills/golang): Go development workflows.
+- [Project Bootstrap](/docs/skills/project-bootstrap): Project bootstrapping workflows.
+- [Python Backend](/docs/skills/python-backend): Python backend development patterns.
+- [React & Next.js](/docs/skills/react-nextjs): React and Next.js development workflows.
+- [Rust](/docs/skills/rust): Rust development workflows.
+- [Solidity](/docs/skills/solidity): Solidity smart contract development.
+- [Tailwind Style Audit](/docs/skills/tailwind-style-audit): Audit Tailwind CSS for conflicts, redundancies, and over-engineering.
+- [TypeScript](/docs/skills/typescript): TypeScript development workflows.

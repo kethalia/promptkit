@@ -1,0 +1,150 @@
+---
+title: "Tailwind Style Audit Skill"
+name: tailwind-style-audit
+description: Analyze Next.js app CSS/Tailwind for inefficiencies, conflicts, and over-engineering. Use when reviewing component styles, auditing Tailwind class usage, checking for redundant utilities, or evaluating shadcn/ui customization. Triggers include "audit styles", "review CSS", "check Tailwind classes", "style review", "class cleanup", "shadcn customization", or when asked to optimize component styling.
+---
+
+# Tailwind Style Audit
+
+Audit Tailwind CSS usage in Next.js apps for conflicts, redundancies, and over-engineering.
+
+## Audit Workflow
+
+1. **Scan components** - Identify files with className usage
+2. **Analyze each component** - Check against issue patterns below
+3. **Report findings** - Group by severity and file
+4. **Suggest fixes** - Provide specific remediation
+
+## Issue Categories
+
+### 1. Conflicting Utilities
+
+Same property set multiple times on one element:
+
+```tsx
+// ❌ BAD: p-4 and p-6 conflict
+<div className="p-4 p-6 m-2">
+
+// ❌ BAD: text color conflict  
+<div className="text-red-500 text-blue-500">
+
+// ❌ BAD: display conflict
+<div className="flex block">
+```
+
+**Common conflict groups:** padding, margin, width, height, display, position, text-color, bg-color, font-size, font-weight, border-radius, z-index
+
+### 2. Redundant/Default Utilities
+
+Classes that do nothing or repeat defaults:
+
+```tsx
+// ❌ BAD: flex-row is default for flex
+<div className="flex flex-row">
+
+// ❌ BAD: items-stretch is default for flex
+<div className="flex items-stretch">
+
+// ❌ BAD: static is default position
+<div className="static">
+
+// ❌ BAD: visible is default
+<div className="visible">
+```
+
+**Common redundancies:** `flex-row`, `items-stretch`, `flex-wrap` (when wrapping not needed), `static`, `visible`, `opacity-100`, `scale-100`, `rotate-0`
+
+### 3. Parent-Child Style Conflicts
+
+Child overrides parent unnecessarily, or inherits conflict:
+
+```tsx
+// ❌ BAD: Parent sets text color, immediate child overrides
+<div className="text-gray-900">
+  <span className="text-gray-900"> {/* redundant */}
+  <p className="text-blue-500"> {/* intentional? or conflict? */}
+</div>
+
+// ❌ BAD: Nested flex containers without purpose
+<div className="flex">
+  <div className="flex"> {/* often unnecessary */}
+```
+
+**Flag for review:** When child completely resets parent styling - may indicate component boundary issue.
+
+### 4. Overly Complex Class Strings
+
+Too many utilities signal abstraction needed:
+
+```tsx
+// ❌ BAD: 15+ utilities = extract component or use @apply
+<button className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+```
+
+**Thresholds:**
+- 10-15 classes: Review for possible extraction
+- 15+ classes: Strongly recommend component extraction or `@apply`
+
+### 5. shadcn/ui Over-Customization
+
+shadcn components should need minimal className additions. Heavy customization signals misuse.
+
+**The Car-to-Plane Principle:** If your classes fundamentally change the component's structure or purpose, extract a new reusable component instead.
+
+```tsx
+// ✅ GOOD: Minor adjustments
+<Button className="w-full">Submit</Button>
+<Card className="border-none shadow-lg">
+
+// ⚠️ REVIEW: Moderate customization (3-5 classes)
+<Button className="rounded-full px-8 py-4 text-lg">
+
+// ❌ BAD: Structural changes = extract new component
+<Card className="flex flex-row items-start gap-0 p-0 border-0 rounded-none bg-transparent">
+  {/* This is no longer a Card - create a custom component */}
+</Card>
+
+// ❌ BAD: Overriding core component identity
+<Dialog className="fixed inset-0 flex items-center justify-center bg-black/50">
+  {/* You're rebuilding the Dialog - use the component properly or create new one */}
+</Dialog>
+```
+
+**shadcn Customization Guidelines:**
+- **Acceptable:** Spacing, width, minor color tweaks, responsive adjustments
+- **Review needed:** Size overrides, layout changes, 5+ added classes
+- **Extract component:** Structural changes, removing core styles, 8+ added classes
+
+## Audit Output Format
+
+```markdown
+## Style Audit: [filename]
+
+### Critical Issues
+- **Line X:** [issue type] - `[problematic classes]`
+  - Fix: [specific fix]
+
+### Warnings  
+- **Line X:** [issue type] - `[classes]`
+  - Consider: [suggestion]
+
+### shadcn Review
+- **[ComponentName]:** [assessment]
+  - Current: `className="[classes]"`
+  - Recommendation: [keep/simplify/extract]
+```
+
+## Detailed Reference
+
+For comprehensive conflict detection matrices and shadcn defaults, see [conflict-patterns.md](references/conflict-patterns.md).
+
+## Quick Checklist
+
+Run through for each component:
+
+- [ ] No conflicting utilities (same property twice)
+- [ ] No redundant defaults (`flex-row`, `items-stretch`, etc.)
+- [ ] Parent-child styles don't unnecessarily repeat or conflict
+- [ ] Class strings under 15 utilities
+- [ ] shadcn components have minimal additions
+- [ ] Heavy customization extracted to new components
