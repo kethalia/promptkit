@@ -17,8 +17,8 @@ pnpm dev
 docker compose up -d
 
 # Or build and run manually
-docker build -t ai-prompts .
-docker run -p 3000:3000 ai-prompts
+docker build -t promptkit .
+docker run -p 3000:3000 promptkit
 ```
 
 ## AI / LLM Access

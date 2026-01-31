@@ -1,6 +1,7 @@
 {
   "title": "Review",
   "pages": [
+    "index",
     "review-current-changes",
     "pr-review",
     "code-review-checklist"

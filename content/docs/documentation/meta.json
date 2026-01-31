@@ -1,6 +1,7 @@
 {
   "title": "Documentation",
   "pages": [
+    "index",
     "generate-readme",
     "document-function",
     "generate-api-docs",

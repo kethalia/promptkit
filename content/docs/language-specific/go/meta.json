@@ -1,6 +1,7 @@
 {
   "title": "Go",
   "pages": [
+    "index",
     "go-idioms-review",
     "concurrency-review",
     "error-handling-review"

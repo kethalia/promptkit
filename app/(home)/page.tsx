@@ -389,7 +389,7 @@ export default function HomePage() {
         <p className="text-fd-muted-foreground">
           Open source under MIT.{' '}
           <a
-            href="https://github.com/kethalia/ai-prompts/blob/main/CONTRIBUTING.md"
+            href="https://github.com/kethalia/promptkit/blob/main/CONTRIBUTING.md"
             className="text-fd-primary hover:underline"
             target="_blank"
             rel="noopener noreferrer"
