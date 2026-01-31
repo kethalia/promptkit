@@ -1,6 +1,7 @@
 {
   "title": "Solidity",
   "pages": [
+    "index",
     "smart-contract-audit",
     "gas-optimization",
     "upgrade-solidity-version",

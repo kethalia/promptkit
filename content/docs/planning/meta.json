@@ -1,6 +1,7 @@
 {
   "title": "Planning",
   "pages": [
+    "index",
     "bootstrap-project-documentation",
     "create-github-issues"
   ]

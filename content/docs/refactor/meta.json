@@ -1,6 +1,7 @@
 {
   "title": "Refactor",
   "pages": [
+    "index",
     "improve-code-quality",
     "extract-reusable",
     "modernize-codebase",

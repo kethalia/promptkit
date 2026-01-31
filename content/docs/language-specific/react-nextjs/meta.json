@@ -1,6 +1,7 @@
 {
   "title": "React & Next.js",
   "pages": [
+    "index",
     "component-review",
     "hooks-best-practices",
     "performance-optimization",

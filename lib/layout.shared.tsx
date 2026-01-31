@@ -3,9 +3,9 @@ import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
 export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
-      title: 'AI Prompts',
+      title: 'PromptKit',
     },
-    githubUrl: 'https://github.com/kethalia/ai-prompts',
+    githubUrl: 'https://github.com/kethalia/promptkit',
     links: [
       {
         text: 'Docs',

@@ -1,6 +1,7 @@
 {
   "title": "Architecture",
   "pages": [
+    "index",
     "design-review",
     "suggest-patterns",
     "evaluate-tradeoffs"

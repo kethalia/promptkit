@@ -1,6 +1,7 @@
 {
   "title": "Languages & Frameworks",
   "pages": [
+    "index",
     "typescript",
     "react-nextjs",
     "go",

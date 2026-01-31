@@ -1,11 +1,11 @@
 ---
-title: "AI Prompts for Coding"
-description: "A curated collection of reusable prompts for AI coding assistants, optimized for opencode and Claude."
+title: PromptKit
+description: "A curated collection of reusable prompts and agent skills for AI coding assistants."
 ---
 
-# AI Prompts for Coding
+# PromptKit
 
-A curated collection of reusable prompts for AI coding assistants, optimized for [opencode](https://opencode.ai) and Claude.
+A curated collection of reusable prompts and agent skills for AI coding assistants.
 
 ---
 
@@ -14,11 +14,11 @@ A curated collection of reusable prompts for AI coding assistants, optimized for
 Copy the prompt content and paste it into your AI assistant, or reference the file path directly if your tool supports it.
 
 ```bash
-# With opencode — use a prompt directly
-opencode "$(cat prompts/review/pr-review.md)"
+# Access a prompt via the API
+curl /api/prompts/review/pr-review
 
-# Or reference in conversation
-@prompts/testing/write-unit-tests.md
+# Fetch the full LLM context file
+curl /llms-full.txt
 ```
 
 ## AI / LLM Access
@@ -31,89 +31,38 @@ This site is optimized for programmatic AI access:
 | [`/llms-full.txt`](/llms-full.txt) | All prompt content in a single file for LLM context |
 | [`/api/prompts`](/api/prompts) | JSON catalog of all prompts with metadata |
 | `/api/prompts/{category}/{slug}` | Raw markdown for a specific prompt |
+| [`/api/skills`](/api/skills) | JSON catalog of all agent skills |
 
 ---
 
 ## General Purpose
 
-<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
-  <a href="/docs/review" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Review</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Code review, PR review, change analysis</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">3 prompts</span>
-  </a>
-  <a href="/docs/debug" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Debug</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Error diagnosis, bug tracing, stack trace analysis</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">3 prompts</span>
-  </a>
-  <a href="/docs/refactor" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Refactor</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Code quality improvements, extraction, modernization</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">4 prompts</span>
-  </a>
-  <a href="/docs/testing" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Testing</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Unit tests, test coverage, test case generation</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">4 prompts</span>
-  </a>
-  <a href="/docs/documentation" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Documentation</h3>
-    <p className="mt-1 text-sm text-muted-foreground">README generation, function docs, API docs</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">5 prompts</span>
-  </a>
-  <a href="/docs/architecture" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Architecture</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Design review, patterns, tradeoff analysis</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">3 prompts</span>
-  </a>
-  <a href="/docs/security" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Security</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Security audits, vulnerability checks, dependency audits</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">3 prompts</span>
-  </a>
-  <a href="/docs/planning" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Planning</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Project bootstrap documentation, GitHub issue creation</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">2 prompts</span>
-  </a>
-</div>
+| Category | Description |
+|----------|-------------|
+| [Review](/docs/review) | Code review, PR review, change analysis |
+| [Debug](/docs/debug) | Error diagnosis, bug tracing, stack trace analysis |
+| [Refactor](/docs/refactor) | Code quality improvements, extraction, modernization |
+| [Testing](/docs/testing) | Unit tests, test coverage, test case generation |
+| [Documentation](/docs/documentation) | README generation, function docs, API docs |
+| [Architecture](/docs/architecture) | Design review, patterns, tradeoff analysis |
+| [Security](/docs/security) | Security audits, vulnerability checks, dependency audits |
+| [Planning](/docs/planning) | Project bootstrap documentation, GitHub issue creation |
 
 ## Language Specific
 
-<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
-  <a href="/docs/language-specific/typescript" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">TypeScript</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Type safety, migration, fixing type errors</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">3 prompts</span>
-  </a>
-  <a href="/docs/language-specific/react-nextjs" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">React & Next.js</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Component review, performance, hooks, App Router migration</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">6 prompts</span>
-  </a>
-  <a href="/docs/language-specific/go" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Go</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Idioms, concurrency, error handling</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">3 prompts</span>
-  </a>
-  <a href="/docs/language-specific/rust" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Rust</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Ownership, unsafe code, Cargo best practices</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">3 prompts</span>
-  </a>
-  <a href="/docs/language-specific/solidity" className="group block rounded-lg border border-border p-5 no-underline transition-colors hover:border-primary hover:bg-accent">
-    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">Solidity</h3>
-    <p className="mt-1 text-sm text-muted-foreground">Smart contract audits, gas optimization, Foundry & Hardhat testing</p>
-    <span className="mt-3 inline-block text-xs text-muted-foreground">5 prompts</span>
-  </a>
-</div>
+| Language | Description |
+|----------|-------------|
+| [TypeScript](/docs/language-specific/typescript) | Type safety, migration, fixing type errors |
+| [React & Next.js](/docs/language-specific/react-nextjs) | Component review, performance, hooks, App Router migration |
+| [Go](/docs/language-specific/go) | Idioms, concurrency, error handling |
+| [Rust](/docs/language-specific/rust) | Ownership, unsafe code, Cargo best practices |
+| [Solidity](/docs/language-specific/solidity) | Smart contract audits, gas optimization, Foundry & Hardhat testing |
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](https://github.com/kethalia/ai-prompts/blob/main/CONTRIBUTING.md) for guidelines on adding or improving prompts.
+See [CONTRIBUTING.md](https://github.com/kethalia/promptkit/blob/main/CONTRIBUTING.md) for guidelines on adding or improving prompts.
 
 ## License
 
