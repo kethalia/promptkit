@@ -1,3 +1,8 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+
+/* Reduce sidebar separator spacing */
+[data-sidebar] p {
+  margin-top: 0.5rem;
+}

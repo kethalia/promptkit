@@ -1,7 +1,6 @@
 {
   "title": "Debug",
   "pages": [
-    "index",
     "diagnose-error",
     "trace-bug",
     "analyze-stack-trace"

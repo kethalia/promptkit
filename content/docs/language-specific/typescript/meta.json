@@ -1,7 +1,6 @@
 {
   "title": "TypeScript",
   "pages": [
-    "index",
     "type-safety-review",
     "fix-type-errors",
     "migrate-to-typescript"

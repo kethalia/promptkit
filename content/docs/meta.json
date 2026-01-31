@@ -1,8 +1,7 @@
 {
   "title": "Docs",
   "pages": [
-    "index",
-    "---General Purpose---",
+    "---Prompts---",
     "review",
     "debug",
     "refactor",
@@ -11,9 +10,8 @@
     "architecture",
     "security",
     "planning",
-    "---Language Specific---",
     "language-specific",
     "---Skills---",
-    "...skills"
+    "skills"
   ]
 }

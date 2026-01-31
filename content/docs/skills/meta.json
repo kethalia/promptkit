@@ -1,7 +1,6 @@
 {
   "title": "Skills",
   "pages": [
-    "index",
     "accessibility",
     "api-design",
     "caching",

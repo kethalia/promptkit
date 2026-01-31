@@ -1,7 +1,6 @@
 {
   "title": "Security",
   "pages": [
-    "index",
     "security-audit",
     "check-vulnerabilities",
     "dependency-audit"
