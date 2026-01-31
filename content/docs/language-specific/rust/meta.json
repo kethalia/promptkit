@@ -1,7 +1,6 @@
 {
   "title": "Rust",
   "pages": [
-    "index",
     "ownership-review",
     "unsafe-code-audit",
     "cargo-best-practices"
