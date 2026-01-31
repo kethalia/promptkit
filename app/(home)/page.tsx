@@ -4,7 +4,7 @@ import {
   Bug,
   Code,
   FileText,
-  GitBranch,
+  RefreshCw,
   LayoutTemplate,
   Shield,
   ClipboardList,
@@ -14,119 +14,172 @@ import {
   ArrowRight,
 } from 'lucide-react'
 
+import { getAllPrompts } from '@/lib/prompts'
+import { getAllSkills } from '@/lib/skills'
+
 import type { ReactNode } from 'react'
 
-const CATEGORIES: {
+interface CategoryItem {
   title: string
   description: string
   href: string
   icon: ReactNode
-  count: number
-}[] = [
+  /** Category key matching the `category` field from getAllPrompts() */
+  category: string
+}
+
+const CATEGORIES: CategoryItem[] = [
   {
     title: 'Review',
     description: 'Code review, PR review, change analysis',
     href: '/docs/review',
     icon: <ClipboardList className="size-5" />,
-    count: 3,
+    category: 'review',
   },
   {
     title: 'Debug',
     description: 'Error diagnosis, bug tracing, stack traces',
     href: '/docs/debug',
     icon: <Bug className="size-5" />,
-    count: 3,
+    category: 'debug',
   },
   {
     title: 'Refactor',
     description: 'Code quality, extraction, modernization',
     href: '/docs/refactor',
-    icon: <GitBranch className="size-5" />,
-    count: 4,
+    icon: <RefreshCw className="size-5" />,
+    category: 'refactor',
   },
   {
     title: 'Testing',
     description: 'Unit tests, coverage, test case generation',
     href: '/docs/testing',
     icon: <TestTube className="size-5" />,
-    count: 4,
+    category: 'testing',
   },
   {
     title: 'Documentation',
     description: 'README generation, function docs, API docs',
     href: '/docs/documentation',
     icon: <FileText className="size-5" />,
-    count: 5,
+    category: 'documentation',
   },
   {
     title: 'Architecture',
     description: 'Design review, patterns, tradeoff analysis',
     href: '/docs/architecture',
     icon: <LayoutTemplate className="size-5" />,
-    count: 3,
+    category: 'architecture',
   },
   {
     title: 'Security',
     description: 'Security audits, vulnerability checks',
     href: '/docs/security',
     icon: <Shield className="size-5" />,
-    count: 3,
+    category: 'security',
   },
   {
     title: 'Planning',
     description: 'Project bootstrap, GitHub issue creation',
     href: '/docs/planning',
     icon: <BookOpen className="size-5" />,
-    count: 2,
+    category: 'planning',
   },
 ]
 
-const LANGUAGES: {
+interface LanguageItem {
   title: string
   description: string
   href: string
-  count: number
-}[] = [
+  /** Category key matching the `category` field from getAllPrompts() */
+  category: string
+}
+
+const LANGUAGES: LanguageItem[] = [
   {
     title: 'TypeScript',
     description: 'Type safety, migration, fixing type errors',
     href: '/docs/language-specific/typescript',
-    count: 3,
+    category: 'language-specific/typescript',
   },
   {
     title: 'React & Next.js',
     description: 'Components, hooks, performance, App Router',
     href: '/docs/language-specific/react-nextjs',
-    count: 6,
+    category: 'language-specific/react-nextjs',
   },
   {
     title: 'Go',
     description: 'Idioms, concurrency, error handling',
     href: '/docs/language-specific/go',
-    count: 3,
+    category: 'language-specific/go',
   },
   {
     title: 'Rust',
     description: 'Ownership, unsafe code, Cargo best practices',
     href: '/docs/language-specific/rust',
-    count: 3,
+    category: 'language-specific/rust',
   },
   {
     title: 'Solidity',
     description: 'Smart contracts, gas optimization, testing',
     href: '/docs/language-specific/solidity',
-    count: 5,
+    category: 'language-specific/solidity',
   },
 ]
 
+function CategoryCard({
+  href,
+  icon,
+  title,
+  description,
+  count,
+}: {
+  href: string
+  icon: ReactNode
+  title: string
+  description: string
+  count: number
+}) {
+  return (
+    <Link
+      href={href}
+      className="group flex flex-col rounded-lg border border-fd-border p-5 transition-colors hover:border-fd-primary hover:bg-fd-accent"
+    >
+      <div className="flex items-center gap-3">
+        <div className="text-fd-muted-foreground transition-colors group-hover:text-fd-primary">
+          {icon}
+        </div>
+        <h3 className="font-semibold text-fd-foreground group-hover:text-fd-primary">
+          {title}
+        </h3>
+      </div>
+      <p className="mt-2 text-sm text-fd-muted-foreground">
+        {description}
+      </p>
+      <span className="mt-auto pt-3 text-xs text-fd-muted-foreground">
+        {count} prompts
+      </span>
+    </Link>
+  )
+}
+
 export default function HomePage() {
+  const prompts = getAllPrompts()
+  const skills = getAllSkills()
+
+  const countByCategory = new Map<string, number>()
+  for (const prompt of prompts) {
+    countByCategory.set(prompt.category, (countByCategory.get(prompt.category) ?? 0) + 1)
+  }
+
   return (
     <main className="container max-w-6xl py-16">
       {/* Hero */}
       <section className="flex flex-col items-center text-center">
         <div className="mb-6 flex items-center gap-2 rounded-full border border-fd-border bg-fd-secondary/50 px-4 py-1.5 text-sm text-fd-muted-foreground">
           <Sparkles className="size-4" />
-          <span>47 prompts &middot; 22 agent skills &middot; LLM-optimized</span>
+          <span>{prompts.length} prompts &middot; {skills.length} agent skills &middot; LLM-optimized</span>
         </div>
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
           AI Prompts for Coding
@@ -144,7 +197,7 @@ export default function HomePage() {
             <ArrowRight className="size-4" />
           </Link>
           <Link
-            href="/docs/skills/code-review"
+            href="/docs/skills"
             className="inline-flex items-center gap-2 rounded-lg border border-fd-border px-5 py-2.5 text-sm font-medium text-fd-foreground transition-colors hover:bg-fd-accent"
           >
             <Sparkles className="size-4" />
@@ -169,12 +222,12 @@ export default function HomePage() {
               <span className="text-fd-muted-foreground"># Access a prompt via the API</span>
               {'\n'}
               <span className="text-fd-primary">curl</span>{' '}
-              <span>https://your-site.com/api/prompts/review/pr-review</span>
+              <span>/api/prompts/review/pr-review</span>
               {'\n\n'}
               <span className="text-fd-muted-foreground"># Fetch the full LLM context file</span>
               {'\n'}
               <span className="text-fd-primary">curl</span>{' '}
-              <span>https://your-site.com/llms-full.txt</span>
+              <span>/llms-full.txt</span>
             </code>
           </pre>
         </div>
@@ -199,26 +252,14 @@ export default function HomePage() {
         </div>
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {CATEGORIES.map((cat) => (
-            <Link
+            <CategoryCard
               key={cat.href}
               href={cat.href}
-              className="group flex flex-col rounded-lg border border-fd-border p-5 transition-colors hover:border-fd-primary hover:bg-fd-accent"
-            >
-              <div className="flex items-center gap-3">
-                <div className="text-fd-muted-foreground transition-colors group-hover:text-fd-primary">
-                  {cat.icon}
-                </div>
-                <h3 className="font-semibold text-fd-foreground group-hover:text-fd-primary">
-                  {cat.title}
-                </h3>
-              </div>
-              <p className="mt-2 text-sm text-fd-muted-foreground">
-                {cat.description}
-              </p>
-              <span className="mt-auto pt-3 text-xs text-fd-muted-foreground">
-                {cat.count} prompts
-              </span>
-            </Link>
+              icon={cat.icon}
+              title={cat.title}
+              description={cat.description}
+              count={countByCategory.get(cat.category) ?? 0}
+            />
           ))}
         </div>
       </section>
@@ -231,24 +272,14 @@ export default function HomePage() {
         </p>
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {LANGUAGES.map((lang) => (
-            <Link
+            <CategoryCard
               key={lang.href}
               href={lang.href}
-              className="group flex flex-col rounded-lg border border-fd-border p-5 transition-colors hover:border-fd-primary hover:bg-fd-accent"
-            >
-              <div className="flex items-center gap-3">
-                <Code className="size-5 text-fd-muted-foreground transition-colors group-hover:text-fd-primary" />
-                <h3 className="font-semibold text-fd-foreground group-hover:text-fd-primary">
-                  {lang.title}
-                </h3>
-              </div>
-              <p className="mt-2 text-sm text-fd-muted-foreground">
-                {lang.description}
-              </p>
-              <span className="mt-auto pt-3 text-xs text-fd-muted-foreground">
-                {lang.count} prompts
-              </span>
-            </Link>
+              icon={<Code className="size-5" />}
+              title={lang.title}
+              description={lang.description}
+              count={countByCategory.get(lang.category) ?? 0}
+            />
           ))}
         </div>
       </section>
@@ -261,7 +292,7 @@ export default function HomePage() {
             <h2 className="text-2xl font-semibold tracking-tight">Agent Skills</h2>
           </div>
           <p className="mt-3 max-w-2xl text-fd-muted-foreground">
-            22 downloadable skill packs following the{' '}
+            {skills.length} downloadable skill packs following the{' '}
             <a
               href="https://github.com/anthropics/agent-skills"
               className="text-fd-primary underline underline-offset-4 hover:text-fd-primary/80"
@@ -274,7 +305,7 @@ export default function HomePage() {
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href="/docs/skills/code-review"
+              href="/docs/skills"
               className="inline-flex items-center gap-2 rounded-lg bg-fd-primary px-4 py-2 text-sm font-medium text-fd-primary-foreground transition-colors hover:bg-fd-primary/90"
             >
               Browse Skills
