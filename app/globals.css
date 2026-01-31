@@ -1,3 +1,10 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+
+/* Constrain sidebar width to prevent grid column from expanding */
+@media (min-width: 768px) {
+  [data-sidebar-placeholder] {
+    width: var(--fd-sidebar-width);
+  }
+}
