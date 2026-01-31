@@ -1,6 +1,6 @@
-# AI Prompts for Coding
+# PromptKit
 
-A curated collection of 47 reusable AI coding prompts, served as a documentation site with AI/LLM-optimized access. Built with Nextra v4, optimized for [opencode](https://opencode.ai) and Claude.
+A curated collection of reusable AI coding prompts and agent skills, served as a documentation site with AI/LLM-optimized access. Built with Fumadocs, optimized for [opencode](https://opencode.ai) and Claude.
 
 ## Quick Start
 
@@ -31,6 +31,8 @@ All prompts are accessible programmatically for AI agents and tools.
 | `GET /llms-full.txt` | text | All prompt content concatenated with XML `<source>` tags |
 | `GET /api/prompts` | JSON | Catalog of all prompts with metadata |
 | `GET /api/prompts/{category}/{slug}` | markdown | Raw content for a single prompt |
+| `GET /api/skills` | JSON | Catalog of all agent skills |
+| `GET /api/skills/{slug}/download` | zip | Download a single `.skill` file |
 
 ### Examples
 
@@ -51,38 +53,41 @@ curl http://localhost:3000/llms-full.txt
 ## Project Structure
 
 ```
-content/                    # MDX prompt files (source of truth)
-  _meta.ts                  # Sidebar configuration
-  index.mdx                 # Homepage
+content/docs/               # MDX prompt files (source of truth)
+  meta.json                 # Sidebar configuration
+  index.mdx                 # Docs landing page
   {category}/               # Prompt categories (review/, debug/, etc.)
+    index.mdx               # Category landing page
     {prompt}.mdx            # Individual prompt files
+  skills/                   # Agent skill definitions
+    {skill}/index.mdx       # Skill overview
+    {skill}/references/     # Reference material
 app/                        # Next.js App Router
-  layout.tsx                # Root layout (Nextra theme, navbar, footer)
-  [[...mdxPath]]/page.tsx   # Catch-all MDX renderer
+  (home)/page.tsx           # Homepage
+  docs/layout.tsx           # Docs layout (Fumadocs)
   llms-full.txt/route.ts    # Full LLM context endpoint
-  api/prompts/              # REST API for programmatic access
+  api/prompts/              # REST API for prompts
+  api/skills/               # REST API for skills
 components/ui/              # shadcn/ui components
 lib/                        # Shared utilities
 public/llms.txt             # llms.txt standard file
+skills/                     # Pre-built .skill download files
 ```
 
 ## Adding Prompts
 
-Add `.mdx` files to `content/` following the template in [CONTRIBUTING.md](CONTRIBUTING.md). Each prompt should have:
+Add `.mdx` files to `content/docs/` following the template in [CONTRIBUTING.md](CONTRIBUTING.md). Each prompt should have:
 
 1. An H1 title and one-line description
 2. Sections for Context, Instructions, Output Format, and Interactive Decisions
-3. An entry in the category's `_meta.ts` for sidebar ordering
-4. An entry in `public/llms.txt`
+3. An entry in the category's `meta.json` for sidebar ordering
 
 ## Tech Stack
 
-- [Next.js 16](https://nextjs.org/) — App Router, standalone output
-- [Nextra v4](https://nextra.site/) — MDX docs framework
-- [Tailwind CSS v4](https://tailwindcss.com/) — Utility-first styling
-- [shadcn/ui](https://ui.shadcn.com/) — UI components
-- [Pagefind](https://pagefind.app/) — Static search indexing
-- [Docker](https://www.docker.com/) — Multi-stage Alpine build for self-hosting
+- [Next.js 16](https://nextjs.org/) -- App Router, standalone output
+- [Fumadocs](https://fumadocs.vercel.app/) -- MDX docs framework
+- [Tailwind CSS v4](https://tailwindcss.com/) -- Utility-first styling
+- [Docker](https://www.docker.com/) -- Multi-stage Alpine build for self-hosting
 
 ## License
 
