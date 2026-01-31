@@ -174,7 +174,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="container max-w-6xl py-16">
+    <main className="container mx-auto max-w-6xl px-4 py-16">
       {/* Hero */}
       <section className="flex flex-col items-center text-center">
         <div className="mb-6 flex items-center gap-2 rounded-full border border-fd-border bg-fd-secondary/50 px-4 py-1.5 text-sm text-fd-muted-foreground">
